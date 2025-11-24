@@ -1,0 +1,65 @@
+NephSpace Elite Construction - Image Requirements
+================================================
+
+IMPORTANT: Add your actual images to this folder (assets/img/)
+
+Required Images:
+----------------
+
+HERO SECTION (Recommended: 1920x1080px)
+- hero1.jpg - Main construction/architecture image
+- hero2.jpg - Design/interior workspace image  
+- hero3.jpg - Quality materials/craftsmanship image
+
+ABOUT SECTION (Recommended: 800x600px)
+- about.jpg - Company building, team photo, or office image
+
+PROJECTS (Recommended: 600x400px)
+- project1.jpg - Modern Office Complex
+- project2.jpg - Luxury Villa/Residential
+- project3.jpg - Corporate Interior Design
+- project4.jpg - Shopping Mall/Commercial
+- project5.jpg - Apartment Complex
+- project6.jpg - Hotel Development
+
+TESTIMONIALS (Recommended: 100x100px, square)
+- client1.jpg - Client headshot
+- client2.jpg - Client headshot
+
+Temporary Placeholder Options:
+-------------------------------
+
+Option 1: Use free stock photos from:
+- Unsplash.com (https://unsplash.com/s/photos/construction)
+- Pexels.com (https://www.pexels.com/search/architecture/)
+- Pixabay.com (https://pixabay.com/images/search/building/)
+
+Option 2: Use placeholder services (temporary):
+- https://placehold.co/1920x1080/d4a574/ffffff?text=Hero+Image
+- https://placehold.co/800x600/d4a574/ffffff?text=About+Us
+- https://placehold.co/600x400/d4a574/ffffff?text=Project
+
+Option 3: Create colored placeholders:
+The website will still function without images, but will show broken image icons.
+
+Recommended Search Terms for Stock Photos:
+------------------------------------------
+- "modern construction site"
+- "luxury architecture"
+- "interior design office"
+- "construction materials"
+- "building exterior"
+- "commercial building"
+- "residential villa"
+- "corporate office interior"
+
+Image Optimization Tips:
+------------------------
+1. Compress images before uploading (use TinyPNG.com or similar)
+2. Use JPEG for photos, PNG for graphics with transparency
+3. Maintain aspect ratios for best display
+4. Aim for file sizes under 500KB for web performance
+
+Note: The website is fully functional and will work with or without images.
+The layout and functionality remain intact.
+
