@@ -200,6 +200,8 @@
             const filterValue = this.getAttribute('data-filter');
 
             projectItems.forEach(item => {
+                const itemCategories = item.getAttribute('data-category');
+
                 if (filterValue === 'all') {
                     item.style.display = 'block';
                     setTimeout(() => {
@@ -207,7 +209,8 @@
                         item.style.transform = 'scale(1)';
                     }, 10);
                 } else {
-                    if (item.getAttribute('data-category') === filterValue) {
+                    // Check if the item's categories include the filter value
+                    if (itemCategories && itemCategories.includes(filterValue)) {
                         item.style.display = 'block';
                         setTimeout(() => {
                             item.style.opacity = '1';
