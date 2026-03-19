@@ -3,8 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Our Projects - Explore our portfolio of completed construction and design projects">
-    <title>Our Projects | NephSpace Elite Construction</title>
+    <meta name="description" content="Explore completed residential, commercial, architecture, and interior design projects delivered by NephSpace Elite Construction across Kenya.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://nephspace.co.ke/projects.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NephSpace Elite Construction">
+    <meta property="og:title" content="Completed Projects | NephSpace Elite Construction">
+    <meta property="og:description" content="Explore completed residential, commercial, architecture, and interior design projects delivered by NephSpace Elite Construction across Kenya.">
+    <meta property="og:url" content="https://nephspace.co.ke/projects.html">
+    <meta property="og:image" content="https://nephspace.co.ke/assets/img/construction-backdrop.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Completed Projects | NephSpace Elite Construction">
+    <meta name="twitter:description" content="Explore completed residential, commercial, architecture, and interior design projects delivered by NephSpace Elite Construction across Kenya.">
+    <meta name="twitter:image" content="https://nephspace.co.ke/assets/img/construction-backdrop.svg">
+    <title>Completed Projects | NephSpace Elite Construction</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,11 +30,9 @@
     <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <!-- Lightbox CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
-
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="assets/logo/nephspace-favicon.svg">
 </head>
 <body>
 
@@ -30,10 +40,15 @@
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
         <div class="container">
             <a class="navbar-brand" href="index.html">
-                <span class="brand-name">NephSpace</span>
-                <span class="brand-tagline">Building Excellence, Defining Spaces</span>
+                <span class="brand-mark">
+                    <img src="assets/logo/nephspace.png" alt="NephSpace Elite Construction logo" class="brand-logo">
+                </span>
+                <span class="brand-copy">
+                    <span class="brand-name">NephSpace</span>
+                    <span class="brand-tagline">Building Excellence, Defining Spaces</span>
+                </span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation" title="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -54,7 +69,15 @@
                             <li><a class="dropdown-item" href="sourcing.html"><i class="fas fa-globe-africa me-2"></i>International Sourcing</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link active" href="projects.html">Projects</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="projectsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Projects
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="projectsDropdown">
+                            <li><a class="dropdown-item active" href="projects.html">Completed Projects</a></li>
+                            <li><a class="dropdown-item" href="ongoing-projects.html">Ongoing Projects</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
                 </ul>
             </div>
@@ -66,8 +89,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center" data-aos="fade-up">
-                    <h1>Our Projects</h1>
-                    <p class="lead">Showcasing Excellence in Every Build</p>
+                    <h1>Completed Projects</h1>
+                    <p class="lead">Showcasing the successful builds and fit-outs we have delivered</p>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb justify-content-center">
                             <li class="breadcrumb-item"><a href="index.html">Home</a></li>
@@ -92,8 +115,8 @@
                 <div class="col-lg-4 col-md-6" data-aos="fade-up">
                     <div class="card border-0 shadow-sm h-100 overflow-hidden">
                         <div class="position-relative">
-                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=500&fit=crop" alt="Residential Projects" class="card-img-top" style="height: 250px; object-fit: cover;">
-                            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6));"></div>
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=500&fit=crop" alt="Residential Projects" class="card-img-top project-category-image">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 project-category-overlay"></div>
                             <div class="position-absolute bottom-0 start-0 p-4 text-white">
                                 <h3 class="mb-0">Residential</h3>
                                 <p class="mb-0">Luxury homes & apartments</p>
@@ -112,8 +135,8 @@
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="card border-0 shadow-sm h-100 overflow-hidden">
                         <div class="position-relative">
-                            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=500&fit=crop" alt="Commercial Projects" class="card-img-top" style="height: 250px; object-fit: cover;">
-                            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6));"></div>
+                            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=500&fit=crop" alt="Commercial Projects" class="card-img-top project-category-image">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 project-category-overlay"></div>
                             <div class="position-absolute bottom-0 start-0 p-4 text-white">
                                 <h3 class="mb-0">Commercial</h3>
                                 <p class="mb-0">Office buildings & retail spaces</p>
@@ -132,8 +155,8 @@
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="card border-0 shadow-sm h-100 overflow-hidden">
                         <div class="position-relative">
-                            <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&h=500&fit=crop" alt="Interior Design Projects" class="card-img-top" style="height: 250px; object-fit: cover;">
-                            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6));"></div>
+                            <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&h=500&fit=crop" alt="Interior Design Projects" class="card-img-top project-category-image">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 project-category-overlay"></div>
                             <div class="position-absolute bottom-0 start-0 p-4 text-white">
                                 <h3 class="mb-0">Interior Design</h3>
                                 <p class="mb-0">Beautiful & functional spaces</p>
@@ -158,272 +181,20 @@
             <div class="text-center mb-5" data-aos="fade-up">
                 <span class="section-subtitle">Our Portfolio</span>
                 <h2 class="section-title">Completed Projects</h2>
-                <p class="section-description">Explore our diverse portfolio of successful projects across various sectors</p>
+                <p class="section-description">Explore 29 completed residential, commercial, architecture, and interior fit-out projects delivered across Kenya.</p>
             </div>
 
             <!-- Filter Buttons -->
             <div class="project-filters text-center mb-5" data-aos="fade-up">
-                <button class="filter-btn active" data-filter="all">All Projects</button>
-                <button class="filter-btn" data-filter="residential">Residential</button>
-                <button class="filter-btn" data-filter="commercial">Commercial</button>
-                <button class="filter-btn" data-filter="interior">Interior Design</button>
-                <button class="filter-btn" data-filter="architecture">Architecture</button>
+                <button class="filter-btn active" type="button" data-filter="all">All Projects</button>
+                <button class="filter-btn" type="button" data-filter="residential">Residential</button>
+                <button class="filter-btn" type="button" data-filter="commercial">Commercial</button>
+                <button class="filter-btn" type="button" data-filter="interior">Interior Design</button>
+                <button class="filter-btn" type="button" data-filter="architecture">Architecture</button>
             </div>
 
             <!-- Projects Grid -->
-            <div class="row g-4" id="projectsGrid">
-                <!-- Project 1 -->
-                <div class="col-lg-4 col-md-6 project-item" data-category="commercial architecture" data-aos="fade-up">
-                    <div class="project-card">
-                        <div class="project-image">
-                            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=400&fit=crop" alt="Modern Office Complex">
-                            <div class="project-overlay">
-                                <div class="project-info">
-                                    <h4>Modern Office Complex</h4>
-                                    <p>Commercial • Architecture</p>
-                                    <div class="project-links">
-                                        <a href="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=800&fit=crop" data-lightbox="projects" data-title="Modern Office Complex" class="project-link">
-                                            <i class="fas fa-search-plus"></i>
-                                        </a>
-                                        <a href="projects-commercial.html" class="project-link">
-                                            <i class="fas fa-link"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-details">
-                            <span class="project-category">Commercial</span>
-                            <h5>Modern Office Complex</h5>
-                            <p>A state-of-the-art office building with sustainable design features</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 2 -->
-                <div class="col-lg-4 col-md-6 project-item" data-category="residential architecture" data-aos="fade-up" data-aos-delay="100">
-                    <div class="project-card">
-                        <div class="project-image">
-                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop" alt="Luxury Villa">
-                            <div class="project-overlay">
-                                <div class="project-info">
-                                    <h4>Luxury Villa</h4>
-                                    <p>Residential • Architecture</p>
-                                    <div class="project-links">
-                                        <a href="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop" data-lightbox="projects" data-title="Luxury Villa" class="project-link">
-                                            <i class="fas fa-search-plus"></i>
-                                        </a>
-                                        <a href="projects-residential.html" class="project-link">
-                                            <i class="fas fa-link"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-details">
-                            <span class="project-category">Residential</span>
-                            <h5>Luxury Villa</h5>
-                            <p>Contemporary villa design with premium finishes and smart home features</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 3 -->
-                <div class="col-lg-4 col-md-6 project-item" data-category="interior commercial" data-aos="fade-up" data-aos-delay="200">
-                    <div class="project-card">
-                        <div class="project-image">
-                            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop" alt="Corporate Interior">
-                            <div class="project-overlay">
-                                <div class="project-info">
-                                    <h4>Corporate Interior Design</h4>
-                                    <p>Interior • Commercial</p>
-                                    <div class="project-links">
-                                        <a href="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop" data-lightbox="projects" data-title="Corporate Interior" class="project-link">
-                                            <i class="fas fa-search-plus"></i>
-                                        </a>
-                                        <a href="projects-interior.html" class="project-link">
-                                            <i class="fas fa-link"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-details">
-                            <span class="project-category">Interior Design</span>
-                            <h5>Corporate Interior</h5>
-                            <p>Modern office interior with collaborative workspaces</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 4 -->
-                <div class="col-lg-4 col-md-6 project-item" data-category="commercial architecture" data-aos="fade-up">
-                    <div class="project-card">
-                        <div class="project-image">
-                            <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=600&h=400&fit=crop" alt="Shopping Mall">
-                            <div class="project-overlay">
-                                <div class="project-info">
-                                    <h4>Shopping Mall Development</h4>
-                                    <p>Commercial • Architecture</p>
-                                    <div class="project-links">
-                                        <a href="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=1200&h=800&fit=crop" data-lightbox="projects" data-title="Shopping Mall" class="project-link">
-                                            <i class="fas fa-search-plus"></i>
-                                        </a>
-                                        <a href="projects-commercial.html" class="project-link">
-                                            <i class="fas fa-link"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-details">
-                            <span class="project-category">Commercial</span>
-                            <h5>Shopping Mall</h5>
-                            <p>Large-scale retail development with modern amenities</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 5 -->
-                <div class="col-lg-4 col-md-6 project-item" data-category="residential architecture" data-aos="fade-up" data-aos-delay="100">
-                    <div class="project-card">
-                        <div class="project-image">
-                            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop" alt="Apartment Complex">
-                            <div class="project-overlay">
-                                <div class="project-info">
-                                    <h4>Apartment Complex</h4>
-                                    <p>Residential • Architecture</p>
-                                    <div class="project-links">
-                                        <a href="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&h=800&fit=crop" data-lightbox="projects" data-title="Apartment Complex" class="project-link">
-                                            <i class="fas fa-search-plus"></i>
-                                        </a>
-                                        <a href="projects-residential.html" class="project-link">
-                                            <i class="fas fa-link"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-details">
-                            <span class="project-category">Residential</span>
-                            <h5>Apartment Complex</h5>
-                            <p>Multi-story residential building with community facilities</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 6 -->
-                <div class="col-lg-4 col-md-6 project-item" data-category="commercial interior" data-aos="fade-up" data-aos-delay="200">
-                    <div class="project-card">
-                        <div class="project-image">
-                            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop" alt="Hotel Development">
-                            <div class="project-overlay">
-                                <div class="project-info">
-                                    <h4>Boutique Hotel</h4>
-                                    <p>Commercial • Interior</p>
-                                    <div class="project-links">
-                                        <a href="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=800&fit=crop" data-lightbox="projects" data-title="Hotel Development" class="project-link">
-                                            <i class="fas fa-search-plus"></i>
-                                        </a>
-                                        <a href="projects-commercial.html" class="project-link">
-                                            <i class="fas fa-link"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-details">
-                            <span class="project-category">Commercial</span>
-                            <h5>Boutique Hotel</h5>
-                            <p>Luxury hotel with contemporary design and premium interiors</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 7 -->
-                <div class="col-lg-4 col-md-6 project-item" data-category="residential interior" data-aos="fade-up">
-                    <div class="project-card">
-                        <div class="project-image">
-                            <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&h=400&fit=crop" alt="Modern Living Room">
-                            <div class="project-overlay">
-                                <div class="project-info">
-                                    <h4>Modern Living Room Design</h4>
-                                    <p>Residential • Interior</p>
-                                    <div class="project-links">
-                                        <a href="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&h=800&fit=crop" data-lightbox="projects" data-title="Modern Living Room" class="project-link">
-                                            <i class="fas fa-search-plus"></i>
-                                        </a>
-                                        <a href="projects-interior.html" class="project-link">
-                                            <i class="fas fa-link"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-details">
-                            <span class="project-category">Interior Design</span>
-                            <h5>Modern Living Room</h5>
-                            <p>Contemporary living space with minimalist design and smart features</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 8 -->
-                <div class="col-lg-4 col-md-6 project-item" data-category="architecture residential" data-aos="fade-up" data-aos-delay="100">
-                    <div class="project-card">
-                        <div class="project-image">
-                            <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop" alt="Contemporary Townhouse">
-                            <div class="project-overlay">
-                                <div class="project-info">
-                                    <h4>Contemporary Townhouse</h4>
-                                    <p>Architecture • Residential</p>
-                                    <div class="project-links">
-                                        <a href="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&h=800&fit=crop" data-lightbox="projects" data-title="Contemporary Townhouse" class="project-link">
-                                            <i class="fas fa-search-plus"></i>
-                                        </a>
-                                        <a href="projects-residential.html" class="project-link">
-                                            <i class="fas fa-link"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-details">
-                            <span class="project-category">Residential</span>
-                            <h5>Contemporary Townhouse</h5>
-                            <p>Modern townhouse development with sustainable design elements</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 9 -->
-                <div class="col-lg-4 col-md-6 project-item" data-category="architecture commercial" data-aos="fade-up" data-aos-delay="200">
-                    <div class="project-card">
-                        <div class="project-image">
-                            <img src="https://images.unsplash.com/photo-1577495508048-b635879837f1?w=600&h=400&fit=crop" alt="Corporate Headquarters">
-                            <div class="project-overlay">
-                                <div class="project-info">
-                                    <h4>Corporate Headquarters</h4>
-                                    <p>Architecture • Commercial</p>
-                                    <div class="project-links">
-                                        <a href="https://images.unsplash.com/photo-1577495508048-b635879837f1?w=1200&h=800&fit=crop" data-lightbox="projects" data-title="Corporate Headquarters" class="project-link">
-                                            <i class="fas fa-search-plus"></i>
-                                        </a>
-                                        <a href="projects-commercial.html" class="project-link">
-                                            <i class="fas fa-link"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-details">
-                            <span class="project-category">Architecture</span>
-                            <h5>Corporate Headquarters</h5>
-                            <p>Iconic office tower with cutting-edge architectural design</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="row g-4" id="projectsGrid"></div>
         </div>
     </section>
 
@@ -486,6 +257,11 @@
         </div>
     </section>
 
+    <a href="https://wa.me/254700903141?text=Hello%20NephSpace%20Elite%20Construction%2C%20I%20would%20like%20to%20discuss%20a%20project." class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Chat with NephSpace on WhatsApp" title="Chat with NephSpace on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span>WhatsApp Us</span>
+    </a>
+
     <!-- Footer -->
     <footer class="footer py-5">
         <div class="container">
@@ -534,9 +310,10 @@
                     <div class="footer-widget">
                         <h5 class="footer-widget-title">Contact Info</h5>
                         <ul class="footer-links">
-                            <li><i class="fas fa-map-marker-alt me-2"></i> Nairobi, Kenya</li>
-                            <li><i class="fas fa-phone me-2"></i> +254 700 000 000</li>
-                            <li><i class="fas fa-envelope me-2"></i> info@nephspace.co.ke</li>
+                            <li><a href="https://www.google.com/maps?q=PRM6%2B22W%2C%20Mogotio%20Rd%2C%20Nairobi" class="footer-location-link" target="_blank" rel="noopener noreferrer" aria-label="Open Royal Offices Mogotio Road in Google Maps" title="Open Royal Offices Mogotio Road in Google Maps"><i class="fas fa-map-marker-alt me-2"></i> Royal Offices Mogotio Road</a></li>
+                            <li><i class="fas fa-phone me-2"></i> +254700903141</li>
+                            <li><i class="fas fa-envelope me-2"></i> nephspaceconstrustion1@gmail.com</li>
+                            <li><i class="fas fa-clock me-2"></i> Mon-Fri 8am-5pm, Sat 8am-12pm</li>
                         </ul>
                     </div>
                 </div>
@@ -559,7 +336,7 @@
     </footer>
 
     <!-- Scroll to Top Button -->
-    <button type="button" id="scrollTop" class="scroll-top" aria-label="Scroll to top">
+    <button type="button" id="scrollTop" class="scroll-top" aria-label="Scroll to top" title="Scroll to top">
         <i class="fas fa-arrow-up"></i>
     </button>
 
@@ -569,10 +346,9 @@
     <!-- AOS Animation -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <!-- Lightbox JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
-
     <!-- Custom JS -->
+    <script src="js/project-data.js"></script>
+    <script src="js/project-listing.js"></script>
     <script src="js/main.js"></script>
 
 </body>

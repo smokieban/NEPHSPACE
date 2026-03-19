@@ -268,24 +268,28 @@
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Sending...';
             submitBtn.disabled = true;
+            formMessage.style.display = 'block';
 
             // Send form data via AJAX
             fetch('contact.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(async response => {
+                const data = await response.json();
+                return { ok: response.ok, data };
+            })
             .then(data => {
-                if (data.success) {
+                if (data.ok && data.data.success) {
                     formMessage.className = 'mt-3 success';
-                    formMessage.textContent = data.message || 'Thank you! Your message has been sent successfully.';
+                    formMessage.textContent = data.data.message || 'Thank you! Your message has been sent successfully.';
                     contactForm.reset();
                 } else {
                     formMessage.className = 'mt-3 error';
-                    formMessage.textContent = data.message || 'Sorry, there was an error sending your message. Please try again.';
+                    formMessage.textContent = data.data.message || 'Sorry, there was an error sending your message. Please try again.';
                 }
             })
-            .catch(error => {
+            .catch(() => {
                 formMessage.className = 'mt-3 error';
                 formMessage.textContent = 'Sorry, there was an error sending your message. Please try again.';
             })

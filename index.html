@@ -3,8 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="NephSpace Elite Construction and Interiors Hub Ltd - Building Excellence, Defining Spaces. Expert Architecture, Quantity Surveying, Design and Build, Construction Material Supply, and International Sourcing.">
+    <meta name="description" content="NephSpace Elite Construction and Interiors Hub Ltd delivers architecture, quantity surveying, design and build, construction material supply, and international sourcing services from Nairobi, Kenya.">
     <meta name="keywords" content="construction, architecture, interior design, quantity surveying, construction materials, international sourcing">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://nephspace.co.ke/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NephSpace Elite Construction">
+    <meta property="og:title" content="NephSpace Elite Construction | Building Excellence, Defining Spaces">
+    <meta property="og:description" content="NephSpace Elite Construction and Interiors Hub Ltd delivers architecture, quantity surveying, design and build, construction material supply, and international sourcing services from Nairobi, Kenya.">
+    <meta property="og:url" content="https://nephspace.co.ke/">
+    <meta property="og:image" content="https://nephspace.co.ke/assets/img/construction-backdrop.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NephSpace Elite Construction | Building Excellence, Defining Spaces">
+    <meta name="twitter:description" content="NephSpace Elite Construction and Interiors Hub Ltd delivers architecture, quantity surveying, design and build, construction material supply, and international sourcing services from Nairobi, Kenya.">
+    <meta name="twitter:image" content="https://nephspace.co.ke/assets/img/construction-backdrop.svg">
     <title>NephSpace Elite Construction | Building Excellence, Defining Spaces</title>
 
     <!-- Bootstrap CSS -->
@@ -21,6 +33,48 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="assets/logo/nephspace-favicon.svg">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "GeneralContractor",
+            "name": "NephSpace Elite Construction and Interiors Hub Ltd",
+            "url": "https://nephspace.co.ke/",
+            "image": "https://nephspace.co.ke/assets/img/construction-backdrop.svg",
+            "telephone": "+254700903141",
+            "email": "nephspaceconstrustion1@gmail.com",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Royal Offices Mogotio Road",
+                "addressLocality": "Nairobi",
+                "addressCountry": "KE"
+            },
+            "hasMap": "https://www.google.com/maps?q=PRM6%2B22W%2C%20Mogotio%20Rd%2C%20Nairobi",
+            "openingHoursSpecification": [
+                {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": [
+                        "https://schema.org/Monday",
+                        "https://schema.org/Tuesday",
+                        "https://schema.org/Wednesday",
+                        "https://schema.org/Thursday",
+                        "https://schema.org/Friday"
+                    ],
+                    "opens": "08:00",
+                    "closes": "17:00"
+                },
+                {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": "https://schema.org/Saturday",
+                    "opens": "08:00",
+                    "closes": "12:00"
+                }
+            ],
+            "sameAs": [
+                "https://wa.me/254700903141?text=Hello%20NephSpace%20Elite%20Construction%2C%20I%20would%20like%20to%20discuss%20a%20project."
+            ]
+        }
+    </script>
 </head>
 <body>
 
@@ -28,10 +82,15 @@
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
         <div class="container">
             <a class="navbar-brand" href="index.html">
-                <span class="brand-name">NephSpace</span>
-                <span class="brand-tagline">Building Excellence, Defining Spaces</span>
+                <span class="brand-mark">
+                    <img src="assets/logo/nephspace.png" alt="NephSpace Elite Construction logo" class="brand-logo">
+                </span>
+                <span class="brand-copy">
+                    <span class="brand-name">NephSpace</span>
+                    <span class="brand-tagline">Building Excellence, Defining Spaces</span>
+                </span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation" title="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -52,7 +111,15 @@
                             <li><a class="dropdown-item" href="sourcing.html"><i class="fas fa-globe-africa me-2"></i>International Sourcing</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Projects
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="projectsDropdown">
+                            <li><a class="dropdown-item" href="projects.html">Completed Projects</a></li>
+                            <li><a class="dropdown-item" href="ongoing-projects.html">Ongoing Projects</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
                 </ul>
             </div>
@@ -62,7 +129,7 @@
     <!-- Hero Section -->
     <section id="home" class="hero-section">
         <div class="hero-slider">
-            <div class="hero-slide active" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=1080&fit=crop');">
+            <div class="hero-slide hero-slide-1 active">
                 <div class="container">
                     <div class="hero-content" data-aos="fade-up">
                         <h1 class="hero-title">Building Excellence</h1>
@@ -73,7 +140,7 @@
                     </div>
                 </div>
             </div>
-            <div class="hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1920&h=1080&fit=crop');">
+            <div class="hero-slide hero-slide-2">
                 <div class="container">
                     <div class="hero-content" data-aos="fade-up">
                         <h1 class="hero-title">Expert Architecture</h1>
@@ -83,7 +150,7 @@
                     </div>
                 </div>
             </div>
-            <div class="hero-slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1920&h=1080&fit=crop');">
+            <div class="hero-slide hero-slide-3">
                 <div class="container">
                     <div class="hero-content" data-aos="fade-up">
                         <h1 class="hero-title">Quality Construction</h1>
@@ -95,8 +162,8 @@
             </div>
         </div>
         <div class="hero-controls">
-            <button class="hero-prev"><i class="fas fa-chevron-left"></i></button>
-            <button class="hero-next"><i class="fas fa-chevron-right"></i></button>
+            <button class="hero-prev" type="button" aria-label="Previous slide" title="Previous slide"><i class="fas fa-chevron-left"></i></button>
+            <button class="hero-next" type="button" aria-label="Next slide" title="Next slide"><i class="fas fa-chevron-right"></i></button>
         </div>
         <div class="hero-indicators"></div>
     </section>
@@ -310,11 +377,11 @@
 
             <!-- Project Filter -->
             <div class="project-filter text-center mb-4" data-aos="fade-up">
-                <button class="filter-btn active" data-filter="all">All Projects</button>
-                <button class="filter-btn" data-filter="residential">Residential</button>
-                <button class="filter-btn" data-filter="commercial">Commercial</button>
-                <button class="filter-btn" data-filter="interior">Interior Design</button>
-                <button class="filter-btn" data-filter="architecture">Architecture</button>
+                <button class="filter-btn active" type="button" data-filter="all">All Projects</button>
+                <button class="filter-btn" type="button" data-filter="residential">Residential</button>
+                <button class="filter-btn" type="button" data-filter="commercial">Commercial</button>
+                <button class="filter-btn" type="button" data-filter="interior">Interior Design</button>
+                <button class="filter-btn" type="button" data-filter="architecture">Architecture</button>
             </div>
 
             <div class="row g-4 projects-grid">
@@ -323,8 +390,8 @@
                         <div class="project-image">
                             <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=400&fit=crop" alt="Modern Office Complex" class="img-fluid">
                             <div class="project-overlay">
-                                <a href="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects"><i class="fas fa-search-plus"></i></a>
-                                <a href="projects.html" class="project-link"><i class="fas fa-link"></i></a>
+                                <a href="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects" aria-label="Open full image of Modern Office Complex" title="Open full image of Modern Office Complex"><i class="fas fa-search-plus"></i></a>
+                                <a href="projects.html" class="project-link" aria-label="View the projects portfolio" title="View the projects portfolio"><i class="fas fa-link"></i></a>
                             </div>
                         </div>
                         <div class="project-info">
@@ -340,8 +407,8 @@
                         <div class="project-image">
                             <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop" alt="Luxury Villa" class="img-fluid">
                             <div class="project-overlay">
-                                <a href="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects"><i class="fas fa-search-plus"></i></a>
-                                <a href="projects.html" class="project-link"><i class="fas fa-link"></i></a>
+                                <a href="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects" aria-label="Open full image of Luxury Villa" title="Open full image of Luxury Villa"><i class="fas fa-search-plus"></i></a>
+                                <a href="projects.html" class="project-link" aria-label="View the projects portfolio" title="View the projects portfolio"><i class="fas fa-link"></i></a>
                             </div>
                         </div>
                         <div class="project-info">
@@ -357,8 +424,8 @@
                         <div class="project-image">
                             <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop" alt="Corporate Interior" class="img-fluid">
                             <div class="project-overlay">
-                                <a href="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects"><i class="fas fa-search-plus"></i></a>
-                                <a href="projects.html" class="project-link"><i class="fas fa-link"></i></a>
+                                <a href="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects" aria-label="Open full image of Corporate Interior" title="Open full image of Corporate Interior"><i class="fas fa-search-plus"></i></a>
+                                <a href="projects.html" class="project-link" aria-label="View the projects portfolio" title="View the projects portfolio"><i class="fas fa-link"></i></a>
                             </div>
                         </div>
                         <div class="project-info">
@@ -374,8 +441,8 @@
                         <div class="project-image">
                             <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=600&h=400&fit=crop" alt="Shopping Mall" class="img-fluid">
                             <div class="project-overlay">
-                                <a href="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects"><i class="fas fa-search-plus"></i></a>
-                                <a href="projects.html" class="project-link"><i class="fas fa-link"></i></a>
+                                <a href="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects" aria-label="Open full image of Shopping Mall" title="Open full image of Shopping Mall"><i class="fas fa-search-plus"></i></a>
+                                <a href="projects.html" class="project-link" aria-label="View the projects portfolio" title="View the projects portfolio"><i class="fas fa-link"></i></a>
                             </div>
                         </div>
                         <div class="project-info">
@@ -391,8 +458,8 @@
                         <div class="project-image">
                             <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop" alt="Apartment Complex" class="img-fluid">
                             <div class="project-overlay">
-                                <a href="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects"><i class="fas fa-search-plus"></i></a>
-                                <a href="projects.html" class="project-link"><i class="fas fa-link"></i></a>
+                                <a href="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects" aria-label="Open full image of Apartment Complex" title="Open full image of Apartment Complex"><i class="fas fa-search-plus"></i></a>
+                                <a href="projects.html" class="project-link" aria-label="View the projects portfolio" title="View the projects portfolio"><i class="fas fa-link"></i></a>
                             </div>
                         </div>
                         <div class="project-info">
@@ -408,8 +475,8 @@
                         <div class="project-image">
                             <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop" alt="Hotel Development" class="img-fluid">
                             <div class="project-overlay">
-                                <a href="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects"><i class="fas fa-search-plus"></i></a>
-                                <a href="projects.html" class="project-link"><i class="fas fa-link"></i></a>
+                                <a href="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=800&fit=crop" class="project-zoom" data-lightbox="projects" aria-label="Open full image of Hotel Development" title="Open full image of Hotel Development"><i class="fas fa-search-plus"></i></a>
+                                <a href="projects.html" class="project-link" aria-label="View the projects portfolio" title="View the projects portfolio"><i class="fas fa-link"></i></a>
                             </div>
                         </div>
                         <div class="project-info">
@@ -441,7 +508,7 @@
                         <i class="fas fa-quote-left"></i>
                         <p>"NephSpace Elite Construction exceeded our expectations in every way. Their attention to detail and commitment to quality is unmatched. Our new office building is a testament to their expertise."</p>
                         <div class="testimonial-author">
-                            <img src="assets/img/client1.jpg" alt="Client">
+                            <img src="assets/img/profile-placeholder.svg" alt="Client portrait placeholder">
                             <div>
                                 <h5>John Kamau</h5>
                                 <span>CEO, Tech Innovations Ltd</span>
@@ -454,11 +521,44 @@
                         <i class="fas fa-quote-left"></i>
                         <p>"Working with NephSpace was a pleasure from start to finish. They delivered our dream home on time and within budget. The quality of workmanship is exceptional."</p>
                         <div class="testimonial-author">
-                            <img src="assets/img/client2.jpg" alt="Client">
+                            <img src="assets/img/profile-placeholder.svg" alt="Client portrait placeholder">
                             <div>
                                 <h5>Sarah Mwangi</h5>
                                 <span>Homeowner</span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="section-subtitle">Our Location</span>
+                <h2 class="section-title">Visit Our Nairobi Office</h2>
+                <p class="section-description">Meet our team at Royal Offices Mogotio Road to discuss your next construction or interior project.</p>
+            </div>
+
+            <div class="location-map-card">
+                <div class="row g-0 align-items-stretch">
+                    <div class="col-lg-5" data-aos="fade-right">
+                        <div class="location-map-content">
+                            <span class="section-subtitle">Find Us Easily</span>
+                            <h3>Royal Offices Mogotio Road</h3>
+                            <p class="location-address"><i class="fas fa-map-marker-alt me-2"></i>Royal Offices Mogotio Road, PRM6+22W, Mogotio Rd, Nairobi</p>
+                            <p>We welcome clients, partners, and suppliers to our office for consultations, project briefings, and progress meetings.</p>
+                            <p><strong>Working Hours:</strong> Monday - Friday, 8:00 AM - 5:00 PM<br>Saturday, 8:00 AM - 12:00 PM</p>
+                            <a href="https://www.google.com/maps?q=PRM6%2B22W%2C%20Mogotio%20Rd%2C%20Nairobi" class="location-map-cta" target="_blank" rel="noopener noreferrer" aria-label="Get directions to our Nairobi office" title="Get directions to our Nairobi office">
+                                <i class="fas fa-location-arrow"></i>Get Directions
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-7" data-aos="fade-left">
+                        <div class="location-map-frame">
+                            <iframe src="https://www.google.com/maps?q=PRM6%2B22W%2C%20Mogotio%20Rd%2C%20Nairobi&z=16&output=embed" loading="lazy" aria-label="Map showing the location of NephSpace Elite Construction"></iframe>
                         </div>
                     </div>
                 </div>
@@ -491,8 +591,8 @@
                                     </div>
                                     <div class="modern-contact-details">
                                         <h6>Call Us</h6>
-                                        <p>+254 700 000 000</p>
-                                        <p>+254 720 000 000</p>
+                                        <p>+254700903141</p>
+                                        <p>Available for calls and WhatsApp enquiries</p>
                                     </div>
                                 </div>
 
@@ -502,8 +602,8 @@
                                     </div>
                                     <div class="modern-contact-details">
                                         <h6>Email Us</h6>
-                                        <p>info@nephspace.co.ke</p>
-                                        <p>projects@nephspace.co.ke</p>
+                                        <p>nephspaceconstrustion1@gmail.com</p>
+                                        <p>For quotations, consultations, and project enquiries</p>
                                     </div>
                                 </div>
 
@@ -513,8 +613,11 @@
                                     </div>
                                     <div class="modern-contact-details">
                                         <h6>Visit Us</h6>
-                                        <p>Nairobi, Kenya</p>
-                                        <p>P.O. Box 12345-00100</p>
+                                        <p>Royal Offices Mogotio Road</p>
+                                        <p>PRM6+22W, Mogotio Rd, Nairobi</p>
+                                        <a href="https://www.google.com/maps?q=PRM6%2B22W%2C%20Mogotio%20Rd%2C%20Nairobi" class="location-link" target="_blank" rel="noopener noreferrer" aria-label="Open our office location in Google Maps" title="Open our office location in Google Maps">
+                                            <i class="fas fa-location-arrow"></i> View on Google Maps
+                                        </a>
                                     </div>
                                 </div>
 
@@ -524,8 +627,8 @@
                                     </div>
                                     <div class="modern-contact-details">
                                         <h6>Working Hours</h6>
-                                        <p>Mon - Fri: 8:00 AM - 6:00 PM</p>
-                                        <p>Saturday: 9:00 AM - 2:00 PM</p>
+                                        <p>Mon - Fri: 8:00 AM - 5:00 PM</p>
+                                        <p>Saturday: 8:00 AM - 12:00 PM</p>
                                     </div>
                                 </div>
 
@@ -625,6 +728,11 @@
         </div>
     </section>
 
+    <a href="https://wa.me/254700903141?text=Hello%20NephSpace%20Elite%20Construction%2C%20I%20would%20like%20to%20discuss%20a%20project." class="floating-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Chat with NephSpace on WhatsApp" title="Chat with NephSpace on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span>WhatsApp Us</span>
+    </a>
+
     <!-- Footer -->
     <footer class="footer py-5">
         <div class="container">
@@ -635,10 +743,10 @@
                         <p class="footer-tagline">Building Excellence, Defining Spaces</p>
                         <p>We are committed to delivering exceptional construction and design solutions that exceed expectations and stand the test of time.</p>
                         <div class="footer-social">
-                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
-                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" aria-label="Visit our Facebook page" title="Visit our Facebook page"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Visit our Twitter page" title="Visit our Twitter page"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="Visit our Instagram page" title="Visit our Instagram page"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="Visit our LinkedIn page" title="Visit our LinkedIn page"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
                 </div>
@@ -675,8 +783,8 @@
                         <p>Subscribe to our newsletter for updates and insights</p>
                         <form class="newsletter-form">
                             <div class="input-group">
-                                <input type="email" class="form-control" placeholder="Your email" required>
-                                <button type="submit" class="btn btn-primary">
+                                <input type="email" class="form-control" placeholder="Your email" aria-label="Email address" required>
+                                <button type="submit" class="btn btn-primary" aria-label="Subscribe to newsletter" title="Subscribe to newsletter">
                                     <i class="fas fa-paper-plane"></i>
                                 </button>
                             </div>
@@ -703,7 +811,7 @@
     </footer>
 
     <!-- Scroll to Top Button -->
-    <button type="button" id="scrollTop" class="scroll-top">
+    <button type="button" id="scrollTop" class="scroll-top" aria-label="Scroll to top" title="Scroll to top">
         <i class="fas fa-arrow-up"></i>
     </button>
 

@@ -4,19 +4,31 @@
  * Building Excellence, Defining Spaces
  */
 
-// Set headers for JSON response
-header('Content-Type: application/json');
+use PHPMailer\PHPMailer\PHPMailer;
 
-// Initialize response array
-$response = array(
-    'success' => false,
-    'message' => ''
-);
+header('Content-Type: application/json; charset=UTF-8');
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
+ob_start();
 
-// Check if form was submitted via POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$autoloadPath = __DIR__ . '/vendor/autoload.php';
+if (!file_exists($autoloadPath)) {
+    sendJsonResponse(array(
+        'success' => false,
+        'message' => 'Email service dependencies are missing. Please install Composer packages and try again.'
+    ), 500);
+}
 
-    // Sanitize and validate input data
+require_once $autoloadPath;
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    sendJsonResponse(array(
+        'success' => false,
+        'message' => 'Invalid request method'
+    ), 405);
+}
+
+try {
     $name = isset($_POST['name']) ? trim(strip_tags($_POST['name'])) : '';
     $email = isset($_POST['email']) ? trim(strip_tags($_POST['email'])) : '';
     $phone = isset($_POST['phone']) ? trim(strip_tags($_POST['phone'])) : '';
@@ -24,86 +36,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $subject = isset($_POST['subject']) ? trim(strip_tags($_POST['subject'])) : '';
     $message = isset($_POST['message']) ? trim(strip_tags($_POST['message'])) : '';
 
-    // Validation
     $errors = array();
 
-    if (empty($name)) {
+    if ($name === '') {
         $errors[] = 'Name is required';
     }
 
-    if (empty($email)) {
+    if ($email === '') {
         $errors[] = 'Email is required';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'Invalid email format';
     }
 
-    if (empty($phone)) {
+    if ($phone === '') {
         $errors[] = 'Phone number is required';
     }
 
-    if (empty($subject)) {
+    if ($subject === '') {
         $errors[] = 'Subject is required';
     }
 
-    if (empty($message)) {
+    if ($message === '') {
         $errors[] = 'Message is required';
     }
 
-    // If there are validation errors
     if (!empty($errors)) {
-        $response['message'] = implode(', ', $errors);
-        echo json_encode($response);
-        exit;
+        sendJsonResponse(array(
+            'success' => false,
+            'message' => implode(', ', $errors)
+        ), 422);
     }
 
-    // Email configuration
-    $to = 'info@nephspace.co.ke'; // Change this to your email address
-    $email_subject = 'New Contact Form Submission: ' . $subject;
+    $config = loadMailConfig();
+    validateMailConfig($config);
 
-    // Create email body
-    $email_body = "You have received a new message from the NephSpace website contact form.\n\n";
-    $email_body .= "Here are the details:\n\n";
-    $email_body .= "Name: $name\n";
-    $email_body .= "Email: $email\n";
-    $email_body .= "Phone: $phone\n";
-    $email_body .= "Service Interested In: " . ($service ? $service : 'Not specified') . "\n";
-    $email_body .= "Subject: $subject\n\n";
-    $email_body .= "Message:\n$message\n";
+    $serviceLabel = $service !== '' ? ucwords(str_replace('-', ' ', $service)) : 'Not specified';
+    $emailSubject = 'New Contact Form Submission: ' . $subject;
+    $emailBody = buildAdminMessage($name, $email, $phone, $serviceLabel, $subject, $message);
 
-    // Email headers
-    $headers = "From: noreply@nephspace.co.ke\r\n";
-    $headers .= "Reply-To: $email\r\n";
-    $headers .= "X-Mailer: PHP/" . phpversion();
+    $mailer = createMailer($config);
+    $mailer->setFrom($config['from_email'], $config['from_name']);
+    $mailer->addAddress($config['recipient_email'], $config['recipient_name']);
+    $mailer->addReplyTo($email, $name);
+    $mailer->Subject = $emailSubject;
+    $mailer->Body = $emailBody;
+    $mailer->send();
 
-    // Send email
-    if (mail($to, $email_subject, $email_body, $headers)) {
-        $response['success'] = true;
-        $response['message'] = 'Thank you for contacting us! We will get back to you soon.';
-
-        // Optional: Save to database
-        // saveToDatabase($name, $email, $phone, $service, $subject, $message);
-
-        // Optional: Send auto-reply to customer
-        sendAutoReply($email, $name);
-
-    } else {
-        $response['message'] = 'Sorry, there was an error sending your message. Please try again later or contact us directly.';
+    if (!empty($config['auto_reply_enabled'])) {
+        sendAutoReply($config, $email, $name);
     }
 
-} else {
-    $response['message'] = 'Invalid request method';
+    sendJsonResponse(array(
+        'success' => true,
+        'message' => 'Thank you for contacting us! We will get back to you soon.'
+    ));
+} catch (Throwable $exception) {
+    error_log('Contact form handler exception: ' . $exception->getMessage());
+
+    $message = 'Sorry, there was an error sending your message. Please try again later or contact us directly at nephspaceconstrustion1@gmail.com.';
+    if (strpos($exception->getMessage(), 'SMTP configuration') !== false) {
+        $message = 'Email service is not configured yet. Please contact us directly at nephspaceconstrustion1@gmail.com.';
+    }
+
+    sendJsonResponse(array(
+        'success' => false,
+        'message' => $message
+    ), 500);
 }
 
-// Return JSON response
-echo json_encode($response);
+function sendAutoReply($config, $customerEmail, $customerName) {
+    $mailer = createMailer($config);
+    $mailer->setFrom($config['from_email'], $config['from_name']);
+    $mailer->addAddress($customerEmail, $customerName);
+    $mailer->addReplyTo($config['recipient_email'], $config['recipient_name']);
+    $mailer->Subject = 'Thank you for contacting NephSpace Elite Construction';
 
-/**
- * Send auto-reply email to customer
- */
-function sendAutoReply($customer_email, $customer_name) {
-    $subject = 'Thank you for contacting NephSpace Elite Construction';
-
-    $message = "Dear $customer_name,\n\n";
+    $message = "Dear {$customerName},\n\n";
     $message .= "Thank you for contacting NephSpace Elite Construction and Interiors Hub Ltd.\n\n";
     $message .= "We have received your message and will get back to you as soon as possible.\n\n";
     $message .= "In the meantime, feel free to explore our services:\n";
@@ -115,13 +123,108 @@ function sendAutoReply($customer_email, $customer_name) {
     $message .= "Building Excellence, Defining Spaces\n\n";
     $message .= "Best regards,\n";
     $message .= "NephSpace Elite Construction Team\n";
-    $message .= "Email: info@nephspace.co.ke\n";
-    $message .= "Phone: +254 700 000 000\n";
+    $message .= "Email: {$config['recipient_email']}\n";
+    $message .= "Phone: +254700903141\n";
 
-    $headers = "From: info@nephspace.co.ke\r\n";
-    $headers .= "X-Mailer: PHP/" . phpversion();
+    $mailer->Body = $message;
 
-    mail($customer_email, $subject, $message, $headers);
+    try {
+        $mailer->send();
+    } catch (Throwable $exception) {
+        error_log('Auto-reply delivery failed: ' . $exception->getMessage());
+    }
+}
+
+function buildAdminMessage($name, $email, $phone, $serviceLabel, $subject, $message) {
+    $body = "You have received a new message from the NephSpace website contact form.\n\n";
+    $body .= "Here are the details:\n\n";
+    $body .= "Name: {$name}\n";
+    $body .= "Email: {$email}\n";
+    $body .= "Phone: {$phone}\n";
+    $body .= "Service Interested In: {$serviceLabel}\n";
+    $body .= "Subject: {$subject}\n\n";
+    $body .= "Message:\n{$message}\n";
+
+    return $body;
+}
+
+function createMailer($config) {
+    $mailer = new PHPMailer(true);
+    $mailer->isSMTP();
+    $mailer->Host = $config['host'];
+    $mailer->SMTPAuth = true;
+    $mailer->Username = $config['username'];
+    $mailer->Password = $config['password'];
+    $mailer->Port = (int) $config['port'];
+    $mailer->CharSet = 'UTF-8';
+    $mailer->isHTML(false);
+
+    $encryption = strtolower((string) $config['encryption']);
+    if ($encryption === 'tls') {
+        $mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    } elseif ($encryption === 'ssl') {
+        $mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+    }
+
+    return $mailer;
+}
+
+function loadMailConfig() {
+    $fileConfig = array();
+    $configPath = __DIR__ . '/contact.config.php';
+
+    if (file_exists($configPath)) {
+        $loadedConfig = require $configPath;
+        if (is_array($loadedConfig)) {
+            $fileConfig = $loadedConfig;
+        }
+    }
+
+    return array(
+        'host' => getConfigValue($fileConfig, 'host', 'SMTP_HOST', ''),
+        'port' => (int) getConfigValue($fileConfig, 'port', 'SMTP_PORT', 587),
+        'encryption' => getConfigValue($fileConfig, 'encryption', 'SMTP_ENCRYPTION', 'tls'),
+        'username' => getConfigValue($fileConfig, 'username', 'SMTP_USERNAME', ''),
+        'password' => getConfigValue($fileConfig, 'password', 'SMTP_PASSWORD', ''),
+        'from_email' => getConfigValue($fileConfig, 'from_email', 'SMTP_FROM_EMAIL', 'nephspaceconstrustion1@gmail.com'),
+        'from_name' => getConfigValue($fileConfig, 'from_name', 'SMTP_FROM_NAME', 'NephSpace Elite Construction'),
+        'recipient_email' => getConfigValue($fileConfig, 'recipient_email', 'SMTP_RECIPIENT_EMAIL', 'nephspaceconstrustion1@gmail.com'),
+        'recipient_name' => getConfigValue($fileConfig, 'recipient_name', 'SMTP_RECIPIENT_NAME', 'NephSpace Elite Construction'),
+        'auto_reply_enabled' => filter_var(getConfigValue($fileConfig, 'auto_reply_enabled', 'SMTP_AUTO_REPLY_ENABLED', true), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
+    );
+}
+
+function getConfigValue($fileConfig, $key, $envKey, $default) {
+    if (array_key_exists($key, $fileConfig) && $fileConfig[$key] !== '') {
+        return $fileConfig[$key];
+    }
+
+    $envValue = getenv($envKey);
+    if ($envValue !== false && $envValue !== '') {
+        return $envValue;
+    }
+
+    return $default;
+}
+
+function validateMailConfig($config) {
+    $requiredKeys = array('host', 'port', 'username', 'password', 'from_email', 'recipient_email');
+
+    foreach ($requiredKeys as $key) {
+        if (empty($config[$key])) {
+            throw new RuntimeException('SMTP configuration is incomplete. Missing: ' . $key);
+        }
+    }
+}
+
+function sendJsonResponse($response, $statusCode = 200) {
+    if (ob_get_length()) {
+        ob_clean();
+    }
+
+    http_response_code($statusCode);
+    echo json_encode($response);
+    exit;
 }
 
 /**
@@ -159,4 +262,3 @@ function saveToDatabase($name, $email, $phone, $service, $subject, $message) {
         error_log("Database error: " . $e->getMessage());
     }
 }
-?>
