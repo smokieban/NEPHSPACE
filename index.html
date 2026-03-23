@@ -500,38 +500,81 @@
             <div class="text-center mb-5" data-aos="fade-up">
                 <span class="section-subtitle">Testimonials</span>
                 <h2 class="section-title">What Our Clients Say</h2>
+                <p class="section-description">Read verified client feedback and share your experience working with NephSpace Elite Construction.</p>
             </div>
 
-            <div class="testimonials-slider" data-aos="fade-up">
-                <div class="testimonial-item active">
-                    <div class="testimonial-content">
-                        <i class="fas fa-quote-left"></i>
-                        <p>"NephSpace Elite Construction exceeded our expectations in every way. Their attention to detail and commitment to quality is unmatched. Our new office building is a testament to their expertise."</p>
-                        <div class="testimonial-author">
-                            <img src="assets/img/profile-placeholder.svg" alt="Client portrait placeholder">
-                            <div>
-                                <h5>John Kamau</h5>
-                                <span>CEO, Tech Innovations Ltd</span>
-                            </div>
-                        </div>
+            <div class="row justify-content-center">
+                <div class="col-xl-9 col-lg-10" data-aos="fade-up">
+                    <div class="testimonials-slider" id="testimonialsSlider">
+                        <div class="testimonial-loading">Loading client reviews...</div>
                     </div>
-                </div>
-                <div class="testimonial-item">
-                    <div class="testimonial-content">
-                        <i class="fas fa-quote-left"></i>
-                        <p>"Working with NephSpace was a pleasure from start to finish. They delivered our dream home on time and within budget. The quality of workmanship is exceptional."</p>
-                        <div class="testimonial-author">
-                            <img src="assets/img/profile-placeholder.svg" alt="Client portrait placeholder">
-                            <div>
-                                <h5>Sarah Mwangi</h5>
-                                <span>Homeowner</span>
-                            </div>
-                        </div>
+
+                    <div class="testimonial-cta-card mt-4 text-center" data-aos="fade-up" data-aos-delay="100">
+                        <span class="section-subtitle">Share Your Experience</span>
+                        <h3 class="mb-3">Worked with NephSpace?</h3>
+                        <p class="mb-4">Submit your review through our quick pop-up form and help future clients make confident decisions.</p>
+                        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#testimonialModal">
+                            Leave a Review
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <div class="modal fade testimonial-modal" id="testimonialModal" tabindex="-1" aria-labelledby="testimonialModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <span class="section-subtitle">Leave a Review</span>
+                        <h3 class="modal-title h4 mb-0" id="testimonialModalLabel">Share Your Experience</h3>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="testimonial-form-card">
+                        <p class="mb-4">Tell future clients how your project journey with NephSpace went.</p>
+
+                        <form id="testimonialForm" class="testimonial-form" action="testimonials.php" method="POST">
+                            <input type="hidden" name="action" value="submit">
+                            <input type="text" name="website" class="d-none" tabindex="-1" autocomplete="off" aria-hidden="true" title="Leave this field blank">
+
+                            <div class="mb-3">
+                                <label for="testimonialName" class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" id="testimonialName" name="name" maxlength="80" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="testimonialRole" class="form-label">Role / Company *</label>
+                                <input type="text" class="form-control" id="testimonialRole" name="role" maxlength="120" placeholder="Homeowner, Investor, CEO, Project Manager..." required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="testimonialRating" class="form-label">Rating *</label>
+                                <select class="form-select" id="testimonialRating" name="rating" required>
+                                    <option value="">Select a rating</option>
+                                    <option value="5">5 - Excellent</option>
+                                    <option value="4">4 - Very Good</option>
+                                    <option value="3">3 - Good</option>
+                                    <option value="2">2 - Fair</option>
+                                    <option value="1">1 - Poor</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="testimonialMessage" class="form-label">Your Review *</label>
+                                <textarea class="form-control" id="testimonialMessage" name="message" rows="5" maxlength="600" placeholder="Share what stood out about the service, communication, and delivery." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+                            <div id="testimonialFormMessage" class="mt-3"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Location Section -->
     <section class="py-5 bg-light">
