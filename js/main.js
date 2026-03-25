@@ -6,11 +6,49 @@
 (function() {
     'use strict';
 
-    const navbarSocialLinks = [
-        { label: 'Instagram', iconClass: 'fab fa-instagram', href: '#' },
-        { label: 'LinkedIn', iconClass: 'fab fa-linkedin-in', href: '#' },
-        { label: 'Twitter', iconClass: 'fab fa-twitter', href: '#' },
-        { label: 'Facebook', iconClass: 'fab fa-facebook-f', href: '#' }
+    const navbarContactDetails = [
+        { label: 'Call us', iconClass: 'fas fa-phone-alt', href: 'tel:+254700903141', value: '+254700903141' },
+        { label: 'Email us', iconClass: 'fas fa-envelope', href: 'mailto:nephspaceconstruction1@gmail.com', value: 'nephspaceconstruction1@gmail.com' }
+    ];
+
+    const serviceDropdownLinks = [
+        { page: 'services.html', iconClass: 'fas fa-layer-group', href: 'services.html', label: 'All Services' },
+        { page: 'pre-feed.html', iconClass: 'fas fa-lightbulb', href: 'pre-feed.html', label: 'Pre-FEED' },
+        { page: 'feed.html', iconClass: 'fas fa-sitemap', href: 'feed.html', label: 'FEED' },
+        { page: 'pre-construction.html', iconClass: 'fas fa-clipboard-list', href: 'pre-construction.html', label: 'Pre-Construction' },
+        { page: 'construction-services.html', iconClass: 'fas fa-hard-hat', href: 'construction-services.html', label: 'Construction' },
+        { page: 'procurement-services.html', iconClass: 'fas fa-truck', href: 'procurement-services.html', label: 'Procurement' },
+        { page: 'construction-management.html', iconClass: 'fas fa-diagram-project', href: 'construction-management.html', label: 'Construction Management' },
+        { page: 'facilities-maintenance.html', iconClass: 'fas fa-screwdriver-wrench', href: 'facilities-maintenance.html', label: 'Facilities Maintenance' }
+    ];
+
+    const insightsDropdownLinks = [
+        { page: 'articles.html', iconClass: 'fas fa-newspaper', href: 'articles.html', label: 'Articles' },
+        { page: 'testimonials.html', iconClass: 'fas fa-comments', href: 'testimonials.html', label: 'Testimonials' }
+    ];
+
+    const serviceContextPages = new Set([
+        'services.html',
+        'pre-feed.html',
+        'feed.html',
+        'pre-construction.html',
+        'construction-services.html',
+        'procurement-services.html',
+        'construction-management.html',
+        'facilities-maintenance.html',
+        'architecture.html',
+        'quantity-surveying.html',
+        'design-build.html',
+        'materials.html',
+        'sourcing.html'
+    ]);
+
+    const projectsDropdownLinks = [
+        { filter: 'all', iconClass: 'fas fa-briefcase', href: 'projects.html#projects', label: 'All Projects' },
+        { filter: 'residential', iconClass: 'fas fa-home', href: 'projects.html?category=residential#projects', label: 'Residential Projects' },
+        { filter: 'commercial', iconClass: 'fas fa-building', href: 'projects.html?category=commercial#projects', label: 'Commercial Projects' },
+        { filter: 'interior', iconClass: 'fas fa-couch', href: 'projects.html?category=interior#projects', label: 'Interior Projects' },
+        { filter: 'architecture', iconClass: 'fas fa-drafting-compass', href: 'projects.html?category=architecture#projects', label: 'Architecture Projects' }
     ];
 
     // ===== Initialize AOS Animation =====
@@ -109,6 +147,12 @@
             if (brand) {
                 brand.setAttribute('aria-label', 'NephSpace Elite Construction');
                 brand.setAttribute('title', 'NephSpace Elite Construction');
+                brand.setAttribute('href', 'index.html');
+                brand.insertAdjacentHTML('beforeend', `
+                    <span class="brand-copy">
+                        <span class="brand-name">Nephspace Elite</span>
+                    </span>
+                `);
             }
 
             if (!container || !collapse || !navList) {
@@ -120,26 +164,266 @@
             navList.classList.remove('ms-auto');
             navList.classList.add('navbar-menu-list');
 
-            let socialWrapper = navbarElement.querySelector('.navbar-social');
-            if (!socialWrapper) {
-                socialWrapper = document.createElement('div');
-                socialWrapper.className = 'navbar-social d-none d-lg-flex';
-                socialWrapper.setAttribute('aria-label', 'Social media links');
-                socialWrapper.innerHTML = getNavbarSocialMarkup();
-                container.appendChild(socialWrapper);
+            removeHomeNavItem(navList);
+            normalizeServicesDropdown(navList);
+            normalizeProjectsDropdown(navList);
+            normalizeInsightsDropdown(navList);
+            normalizeContactLink(navList);
+
+            navbarElement.querySelectorAll('.navbar-social').forEach(element => element.remove());
+
+            let contactWrapper = collapse.querySelector('.navbar-meta');
+            if (!contactWrapper) {
+                contactWrapper = document.createElement('div');
+                contactWrapper.className = 'navbar-meta';
+                collapse.appendChild(contactWrapper);
             }
+
+            collapse.insertBefore(contactWrapper, navList);
+            contactWrapper.innerHTML = getNavbarContactMarkup();
         });
+
+        setupDesktopDropdowns();
     }
 
-    function getNavbarSocialMarkup() {
-        return navbarSocialLinks.map(link => {
-            const isPlaceholder = link.href === '#';
+    function getNavbarContactMarkup() {
+        return navbarContactDetails.map(link => {
             return `
-                <a href="${link.href}" class="navbar-social-link" aria-label="Visit our ${link.label} page" title="Visit our ${link.label} page"${isPlaceholder ? ' data-placeholder-link="true"' : ' target="_blank" rel="noopener noreferrer"'}>
+                <a href="${link.href}" class="navbar-contact-link" aria-label="${link.label}" title="${link.value}">
                     <i class="${link.iconClass}"></i>
+                    <span>${link.value}</span>
                 </a>
             `;
         }).join('');
+    }
+
+    function removeHomeNavItem(navList) {
+        const homeNavItem = Array.from(navList.children).find(item => {
+            const link = item.querySelector(':scope > .nav-link');
+            return link && link.textContent.trim().toLowerCase() === 'home';
+        });
+
+        if (homeNavItem) {
+            homeNavItem.remove();
+        }
+    }
+
+    function findTopLevelNavItem(navList, label, requireDropdown = false) {
+        return Array.from(navList.children).find(item => {
+            const selector = requireDropdown ? ':scope > .nav-link.dropdown-toggle' : ':scope > .nav-link';
+            const link = item.querySelector(selector);
+            return link && link.textContent.trim().toLowerCase() === label;
+        });
+    }
+
+    function normalizeServicesDropdown(navList) {
+        const servicesNavItem = findTopLevelNavItem(navList, 'services', true);
+
+        if (!servicesNavItem) {
+            return;
+        }
+
+        const toggle = servicesNavItem.querySelector(':scope > .nav-link.dropdown-toggle');
+        const menu = servicesNavItem.querySelector(':scope > .dropdown-menu');
+
+        if (!toggle || !menu) {
+            return;
+        }
+
+        toggle.textContent = 'Services';
+        toggle.setAttribute('href', 'services.html');
+        toggle.classList.toggle('active', isServicesContextPage());
+        menu.innerHTML = getServicesDropdownMarkup();
+    }
+
+    function getServicesDropdownMarkup() {
+        const currentPage = getCurrentPage();
+
+        return serviceDropdownLinks.map((link, index) => {
+            const activeClass = link.page === currentPage ? ' active' : '';
+            const dividerMarkup = index === 0 ? '<li><hr class="dropdown-divider"></li>' : '';
+
+            return `
+                <li>
+                    <a class="dropdown-item${activeClass}" href="${link.href}">
+                        <i class="${link.iconClass} me-2"></i>${link.label}
+                    </a>
+                </li>
+                ${dividerMarkup}
+            `;
+        }).join('');
+    }
+
+    function normalizeProjectsDropdown(navList) {
+        const projectsNavItem = findTopLevelNavItem(navList, 'projects', true);
+
+        if (!projectsNavItem) {
+            return;
+        }
+
+        const toggle = projectsNavItem.querySelector(':scope > .nav-link.dropdown-toggle');
+        const menu = projectsNavItem.querySelector(':scope > .dropdown-menu');
+
+        if (!toggle || !menu) {
+            return;
+        }
+
+        toggle.textContent = 'Projects';
+        toggle.setAttribute('href', 'projects.html');
+        toggle.classList.toggle('active', isProjectsContextPage());
+        menu.innerHTML = getProjectsDropdownMarkup();
+    }
+
+    function normalizeInsightsDropdown(navList) {
+        let insightsNavItem = findTopLevelNavItem(navList, 'insights', true);
+
+        if (!insightsNavItem) {
+            insightsNavItem = document.createElement('li');
+            insightsNavItem.className = 'nav-item dropdown';
+            insightsNavItem.innerHTML = `
+                <a class="nav-link dropdown-toggle" href="#" id="insightsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Insights
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="insightsDropdown"></ul>
+            `;
+
+            const contactNavItem = findTopLevelNavItem(navList, 'contact');
+            if (contactNavItem) {
+                navList.insertBefore(insightsNavItem, contactNavItem);
+            } else {
+                navList.appendChild(insightsNavItem);
+            }
+        }
+
+        const toggle = insightsNavItem.querySelector(':scope > .nav-link.dropdown-toggle');
+        const menu = insightsNavItem.querySelector(':scope > .dropdown-menu');
+
+        if (!toggle || !menu) {
+            return;
+        }
+
+        toggle.textContent = 'Insights';
+        toggle.setAttribute('href', '#');
+        toggle.classList.toggle('active', isInsightsContextPage());
+        menu.innerHTML = getInsightsDropdownMarkup();
+    }
+
+    function getInsightsDropdownMarkup() {
+        const currentPage = getCurrentPage();
+
+        return insightsDropdownLinks.map(link => `
+            <li>
+                <a class="dropdown-item${link.page === currentPage ? ' active' : ''}" href="${link.href}">
+                    <i class="${link.iconClass} me-2"></i>${link.label}
+                </a>
+            </li>
+        `).join('');
+    }
+
+    function normalizeContactLink(navList) {
+        let contactNavItem = findTopLevelNavItem(navList, 'contact');
+
+        if (!contactNavItem) {
+            contactNavItem = document.createElement('li');
+            contactNavItem.className = 'nav-item';
+            contactNavItem.innerHTML = '<a class="nav-link" href="contact.html">Contact</a>';
+            navList.appendChild(contactNavItem);
+        }
+
+        const contactLink = contactNavItem.querySelector(':scope > .nav-link');
+        if (!contactLink) {
+            return;
+        }
+
+        contactLink.textContent = 'Contact';
+        contactLink.setAttribute('href', 'contact.html');
+        contactLink.classList.toggle('active', getCurrentPage() === 'contact.html');
+    }
+
+    function getProjectsDropdownMarkup() {
+        const currentPage = getCurrentPage();
+        const currentFilter = getCurrentProjectFilter();
+        const isProjectsPage = currentPage === 'projects.html';
+
+        return projectsDropdownLinks.map(link => {
+            const isActive = isProjectsContextPage() && ((isProjectsPage && currentFilter === link.filter) || (!isProjectsPage && link.filter === 'all'));
+
+            return `
+                <li>
+                    <a class="dropdown-item${isActive ? ' active' : ''}" href="${link.href}">
+                        <i class="${link.iconClass} me-2"></i>${link.label}
+                    </a>
+                </li>
+            `;
+        }).join('');
+    }
+
+    function getCurrentPage() {
+        return window.location.pathname.split('/').pop() || 'index.html';
+    }
+
+    function getCurrentProjectFilter() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('category') || 'all';
+    }
+
+    function isServicesContextPage() {
+        return serviceContextPages.has(getCurrentPage());
+    }
+
+    function isProjectsContextPage() {
+        const currentPage = getCurrentPage();
+        return currentPage === 'projects.html'
+            || currentPage === 'project-detail.html'
+            || currentPage === 'ongoing-projects.html'
+            || currentPage.startsWith('projects-');
+    }
+
+    function isInsightsContextPage() {
+        const currentPage = getCurrentPage();
+        return currentPage === 'articles.html' || currentPage === 'testimonials.html';
+    }
+
+    function setupDesktopDropdowns() {
+        document.querySelectorAll('.navbar .nav-item.dropdown').forEach(dropdown => {
+            if (dropdown.dataset.hoverReady === 'true') {
+                return;
+            }
+
+            const toggle = dropdown.querySelector(':scope > .nav-link.dropdown-toggle');
+            const menu = dropdown.querySelector(':scope > .dropdown-menu');
+
+            if (!toggle || !menu) {
+                return;
+            }
+
+            const openDropdown = () => {
+                if (window.innerWidth < 992) {
+                    return;
+                }
+
+                dropdown.classList.add('show');
+                menu.classList.add('show');
+                toggle.setAttribute('aria-expanded', 'true');
+            };
+
+            const closeDropdown = () => {
+                dropdown.classList.remove('show');
+                menu.classList.remove('show');
+                toggle.setAttribute('aria-expanded', 'false');
+            };
+
+            dropdown.addEventListener('mouseenter', openDropdown);
+            dropdown.addEventListener('mouseleave', closeDropdown);
+            toggle.addEventListener('click', event => {
+                if (window.innerWidth >= 992) {
+                    event.preventDefault();
+                    closeDropdown();
+                }
+            });
+
+            dropdown.dataset.hoverReady = 'true';
+        });
     }
 
     function renderSharedFooter() {
@@ -156,7 +440,7 @@
                         <div class="footer-widget">
                             <h4 class="footer-title">NephSpace Elite Construction</h4>
                             <p class="footer-tagline">Building Excellence, Defining Spaces</p>
-                            <p>We deliver architecture, design-build, quantity surveying, materials supply, and sourcing support for residential, commercial, and interior projects across Kenya.</p>
+                            <p>We deliver end-to-end solutions across Pre-FEED, FEED, pre-construction, construction, procurement, construction management, and facilities maintenance.</p>
                             <div class="footer-social">
                                 <a href="https://wa.me/254700903141?text=Hello%20NephSpace%20Elite%20Construction%2C%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" title="Chat with us on WhatsApp"><i class="fab fa-whatsapp"></i></a>
                                 <a href="mailto:nephspaceconstruction1@gmail.com" aria-label="Send us an email" title="Send us an email"><i class="fas fa-envelope"></i></a>
@@ -173,7 +457,7 @@
                                 <li><a href="about.html">About Us</a></li>
                                 <li><a href="services.html">Services</a></li>
                                 <li><a href="projects.html">Projects</a></li>
-                                <li><a href="index.html#contact">Contact</a></li>
+                                <li><a href="contact.html">Contact</a></li>
                             </ul>
                         </div>
                     </div>
@@ -181,11 +465,7 @@
                         <div class="footer-widget">
                             <h5 class="footer-widget-title">Our Services</h5>
                             <ul class="footer-links">
-                                <li><a href="architecture.html">Architecture</a></li>
-                                <li><a href="quantity-surveying.html">Quantity Surveying</a></li>
-                                <li><a href="design-build.html">Design and Build</a></li>
-                                <li><a href="materials.html">Construction Materials</a></li>
-                                <li><a href="sourcing.html">International Sourcing</a></li>
+                                ${getFooterServicesMarkup()}
                             </ul>
                         </div>
                     </div>
@@ -209,12 +489,17 @@
                     <div class="col-md-6 text-center text-md-end">
                         <ul class="footer-bottom-links">
                             <li><a href="about.html">About</a></li>
-                            <li><a href="projects.html">Projects</a></li>
-                            <li><a href="index.html#contact">Contact</a></li>
+                            <li><a href="articles.html">Articles</a></li>
+                            <li><a href="testimonials.html">Testimonials</a></li>
+                            <li><a href="contact.html">Contact</a></li>
                         </ul>
                     </div>
                 </div>
             </div>`;
+    }
+
+    function getFooterServicesMarkup() {
+        return serviceDropdownLinks.slice(1).map(link => `<li><a href="${link.href}">${link.label}</a></li>`).join('');
     }
 
     // ===== Hero Slider =====
@@ -332,41 +617,39 @@
     const filterBtns = document.querySelectorAll('.filter-btn');
     const projectItems = document.querySelectorAll('.project-item');
 
+    function applyProjectFilter(filterValue) {
+        filterBtns.forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-filter') === filterValue);
+        });
+
+        projectItems.forEach(item => {
+            const itemCategories = item.getAttribute('data-category');
+
+            if (filterValue === 'all') {
+                item.style.display = 'block';
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'scale(1)';
+                }, 10);
+            } else if (itemCategories && itemCategories.includes(filterValue)) {
+                item.style.display = 'block';
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'scale(1)';
+                }, 10);
+            } else {
+                item.style.opacity = '0';
+                item.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    item.style.display = 'none';
+                }, 300);
+            }
+        });
+    }
+
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Remove active class from all buttons
-            filterBtns.forEach(b => b.classList.remove('active'));
-            // Add active class to clicked button
-            this.classList.add('active');
-
-            const filterValue = this.getAttribute('data-filter');
-
-            projectItems.forEach(item => {
-                const itemCategories = item.getAttribute('data-category');
-
-                if (filterValue === 'all') {
-                    item.style.display = 'block';
-                    setTimeout(() => {
-                        item.style.opacity = '1';
-                        item.style.transform = 'scale(1)';
-                    }, 10);
-                } else {
-                    // Check if the item's categories include the filter value
-                    if (itemCategories && itemCategories.includes(filterValue)) {
-                        item.style.display = 'block';
-                        setTimeout(() => {
-                            item.style.opacity = '1';
-                            item.style.transform = 'scale(1)';
-                        }, 10);
-                    } else {
-                        item.style.opacity = '0';
-                        item.style.transform = 'scale(0.8)';
-                        setTimeout(() => {
-                            item.style.display = 'none';
-                        }, 300);
-                    }
-                }
-            });
+            applyProjectFilter(this.getAttribute('data-filter') || 'all');
         });
     });
 
@@ -374,6 +657,14 @@
     projectItems.forEach(item => {
         item.style.transition = 'all 0.3s ease';
     });
+
+    const requestedProjectCategory = getCurrentProjectFilter();
+    if (requestedProjectCategory !== 'all') {
+        const matchingFilter = Array.from(filterBtns).find(btn => btn.getAttribute('data-filter') === requestedProjectCategory);
+        if (matchingFilter) {
+            applyProjectFilter(requestedProjectCategory);
+        }
+    }
 
     // ===== Testimonials =====
     const testimonialsSlider = document.getElementById('testimonialsSlider');
@@ -651,10 +942,6 @@
     document.addEventListener('click', function(e) {
         const navbarCollapse = document.querySelector('.navbar-collapse');
         const navbarToggler = document.querySelector('.navbar-toggler');
-
-        if (e.target.closest('.navbar-social-link[data-placeholder-link="true"]')) {
-            e.preventDefault();
-        }
 
         if (navbarCollapse && navbarCollapse.classList.contains('show')) {
             if (!navbarCollapse.contains(e.target) && !navbarToggler.contains(e.target)) {
