@@ -323,12 +323,9 @@ section {
     }
 
     .navbar-menu-shell {
-        flex: 0 0 auto;
-        width: max-content;
-        margin-left: auto;
         display: flex !important;
         flex-direction: column;
-        align-items: stretch;
+        align-items: flex-end;
         justify-content: center;
         gap: 10px;
     }
@@ -336,12 +333,11 @@ section {
     .navbar-menu-list {
         flex-wrap: nowrap;
         justify-content: flex-end;
-        width: 100%;
-        margin-left: 0;
+        width: auto;
     }
 
     .navbar-meta {
-        width: 100%;
+        width: auto;
     }
 
     .navbar-nav .nav-item.dropdown {
