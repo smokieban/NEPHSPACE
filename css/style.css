@@ -181,6 +181,10 @@ section {
     justify-content: flex-end;
     margin-left: auto;
     flex-wrap: wrap;
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px solid #d4a574;
 }
 
 .navbar-meta {
@@ -201,15 +205,19 @@ section {
     align-items: center;
     gap: 8px;
     color: var(--dark-color);
-    font-size: var(--font-size-base);
+    font-size: 13px;
     font-weight: 500;
     white-space: nowrap;
     transition: var(--transition);
 }
 
+.navbar-contact-link span {
+    font-size: 13px;
+}
+
 .navbar-contact-link i {
     color: var(--primary-color);
-    font-size: 16px;
+    font-size: 11px;
 }
 
 .navbar-contact-link:hover,
@@ -223,6 +231,7 @@ section {
     font-weight: 700;
     color: var(--dark-color);
     white-space: nowrap;
+    text-transform: uppercase;
 }
 
 .brand-tagline {
@@ -237,6 +246,7 @@ section {
     margin: 0 5px;
     position: relative;
     transition: var(--transition);
+    text-transform: uppercase;
 }
 
 .navbar-nav .nav-link:hover,
@@ -315,7 +325,7 @@ section {
     .navbar-menu-shell {
         display: flex !important;
         flex-direction: column;
-        align-items: flex-end;
+        align-items: stretch;
         justify-content: center;
         gap: 10px;
     }
@@ -323,11 +333,11 @@ section {
     .navbar-menu-list {
         flex-wrap: nowrap;
         justify-content: flex-end;
-        width: auto;
+        width: 100%;
     }
 
     .navbar-meta {
-        width: auto;
+        width: 100%;
     }
 
     .navbar-nav .nav-item.dropdown {

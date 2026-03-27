@@ -150,7 +150,7 @@
                 brand.setAttribute('href', 'index.html');
                 brand.insertAdjacentHTML('beforeend', `
                     <span class="brand-copy">
-                        <span class="brand-name">Nephspace Elite</span>
+                        <span class="brand-name">NEPHSPACE ELITE</span>
                     </span>
                 `);
             }
