@@ -366,6 +366,13 @@ section {
     margin-top: 1rem;
 }
 
+.about-copy-stack .lead {
+    font-size: var(--font-size-base);
+    line-height: 1.8;
+    color: var(--text-color);
+    font-weight: 400;
+}
+
 /* ===== Hero Section ===== */
 .hero-section {
     position: relative;
