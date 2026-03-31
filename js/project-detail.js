@@ -81,12 +81,18 @@
         return;
     }
 
+    const canonicalUrl = `https://nephspaceelite.com/project-detail.html?project=${encodeURIComponent(project.slug)}`;
     document.title = `${project.title} | NephSpace Elite Construction`;
     document.getElementById('pageDescriptionMeta')?.setAttribute('content', project.description);
-    document.getElementById('pageCanonicalLink')?.setAttribute('href', `https://nephspace.co.ke/project-detail.html?project=${encodeURIComponent(project.slug)}`);
+    document.getElementById('pageCanonicalLink')?.setAttribute('href', canonicalUrl);
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', `${project.title} | NephSpace Elite Construction`);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', project.description);
+    document.querySelector('meta[property="og:url"]')?.setAttribute('content', canonicalUrl);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', `${project.title} | NephSpace Elite Construction`);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', project.description);
 
     setText('projectPageTitle', project.title);
-    setText('projectPageLead', `${project.statusType === 'ongoing' ? 'Ongoing' : 'Completed'} project in ${project.category}`);
+    setText('projectPageLead', `${project.statusType === 'ongoing' ? 'Ongoing' : 'Completed'} ${project.category} project`);
     setText('projectBreadcrumbCurrent', project.title);
     setText('projectCategory', project.category);
     setText('projectStatusBadge', project.statusType === 'ongoing' ? 'Ongoing Project' : 'Completed Project');

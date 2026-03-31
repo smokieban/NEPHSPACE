@@ -43,12 +43,20 @@
         'sourcing.html'
     ]);
 
+    const expertiseAreas = [
+        { filter: 'industrial', iconClass: 'fas fa-industry', href: 'projects.html?category=industrial#projects', label: 'Industrial' },
+        { filter: 'technology', iconClass: 'fas fa-microchip', href: 'projects.html?category=technology#projects', label: 'Technology' },
+        { filter: 'interior-fit-outs', iconClass: 'fas fa-couch', href: 'projects.html?category=interior-fit-outs#projects', label: 'Interior Fit Outs' },
+        { filter: 'commercial', iconClass: 'fas fa-building', href: 'projects.html?category=commercial#projects', label: 'Commercial' },
+        { filter: 'residential', iconClass: 'fas fa-home', href: 'projects.html?category=residential#projects', label: 'Residential' },
+        { filter: 'institutions', iconClass: 'fas fa-landmark', href: 'projects.html?category=institutions#projects', label: 'Institutions' },
+        { filter: 'healthcare', iconClass: 'fas fa-heart-pulse', href: 'projects.html?category=healthcare#projects', label: 'Healthcare' },
+        { filter: 'hospitality', iconClass: 'fas fa-hotel', href: 'projects.html?category=hospitality#projects', label: 'Hospitality' }
+    ];
+
     const projectsDropdownLinks = [
         { filter: 'all', iconClass: 'fas fa-briefcase', href: 'projects.html#projects', label: 'All Projects' },
-        { filter: 'residential', iconClass: 'fas fa-home', href: 'projects.html?category=residential#projects', label: 'Residential Projects' },
-        { filter: 'commercial', iconClass: 'fas fa-building', href: 'projects.html?category=commercial#projects', label: 'Commercial Projects' },
-        { filter: 'interior', iconClass: 'fas fa-couch', href: 'projects.html?category=interior#projects', label: 'Interior Projects' },
-        { filter: 'architecture', iconClass: 'fas fa-drafting-compass', href: 'projects.html?category=architecture#projects', label: 'Architecture Projects' }
+        ...expertiseAreas
     ];
 
     // ===== Initialize AOS Animation =====
@@ -69,6 +77,8 @@
 
     normalizeBranding();
     renderSharedFooter();
+    normalizeDocumentCopy();
+    window.addEventListener('load', normalizeDocumentCopy);
 
     window.addEventListener('scroll', function() {
         if (navbar && window.scrollY > 100) {
@@ -440,7 +450,7 @@
                         <div class="footer-widget">
                             <h4 class="footer-title">NephSpace Elite Construction</h4>
                             <p class="footer-tagline">Building Excellence, Defining Spaces</p>
-                            <p>We deliver end-to-end solutions across Pre-FEED, FEED, pre-construction, construction, procurement, construction management, and facilities maintenance.</p>
+                            <p>We deliver end to end solutions across Pre FEED, FEED, pre construction, construction, procurement, construction management, and facilities maintenance.</p>
                             <div class="footer-social">
                                 <a href="https://wa.me/254700903141?text=Hello%20NephSpace%20Elite%20Construction%2C%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" title="Chat with us on WhatsApp"><i class="fab fa-whatsapp"></i></a>
                                 <a href="mailto:nephspaceconstruction1@gmail.com" aria-label="Send us an email" title="Send us an email"><i class="fas fa-envelope"></i></a>
@@ -484,7 +494,7 @@
                 <hr class="footer-divider">
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start">
-                        <p class="copyright">&copy; ${currentYear} NephSpace Elite Construction and Interiors Hub Ltd. All rights reserved.</p>
+                        <p class="copyright">&copy; ${currentYear} NephSpace Elite Construction. All rights reserved.</p>
                     </div>
                     <div class="col-md-6 text-center text-md-end">
                         <ul class="footer-bottom-links">
@@ -496,6 +506,177 @@
                     </div>
                 </div>
             </div>`;
+    }
+
+    function getCanonicalUrl() {
+        const currentPage = getCurrentPage();
+        const path = currentPage === 'index.html' ? '/' : `/${currentPage}`;
+        const query = window.location.search || '';
+        return `https://nephspaceelite.com${path}${query}`;
+    }
+
+    function replaceKnownCopy(value) {
+        if (typeof value !== 'string' || value.length === 0) {
+            return value;
+        }
+
+        const replacements = [
+            ['https://nephspace.co.ke', 'https://nephspaceelite.com'],
+            ['nephspace.co.ke', 'nephspaceelite.com'],
+            ['NephSpace Elite Construction and Interiors Hub Ltd', 'NephSpace Elite Construction'],
+            ['NephSpace Elite Construction & Interiors Hub Limited', 'NephSpace Elite Construction'],
+            ['NephSpace Elite Construction & Interiors Hub', 'NephSpace Elite Construction'],
+            ['Nephspace Elite Construction & Interiors Hub Limited', 'NephSpace Elite Construction'],
+            ['Nephspace Elite Construction & Interiors Hub', 'NephSpace Elite Construction'],
+            ['Nephspace Elite Construction', 'NephSpace Elite Construction'],
+            ['End-to-End', 'End to End'],
+            ['end-to-end', 'end to end'],
+            ['Pre-Construction', 'Pre Construction'],
+            ['pre-construction', 'pre construction'],
+            ['Pre-FEED', 'Pre FEED'],
+            ['pre-feed', 'pre feed'],
+            ['Fit-Outs', 'Fit Outs'],
+            ['fit-outs', 'fit outs'],
+            ['Fit-Out', 'Fit Out'],
+            ['fit-out', 'fit out'],
+            ['Fitout', 'Fit Out'],
+            ['fitout', 'fit out'],
+            ['Long-Term', 'Long Term'],
+            ['long-term', 'long term'],
+            ['High-End', 'High End'],
+            ['high-end', 'high end'],
+            ['Mixed-Use', 'Mixed Use'],
+            ['mixed-use', 'mixed use'],
+            ['Client-Facing', 'Client Facing'],
+            ['client-facing', 'client facing'],
+            ['Customer-Facing', 'Customer Facing'],
+            ['customer-facing', 'customer facing'],
+            ['Customer-Friendly', 'Customer Friendly'],
+            ['customer-friendly', 'customer friendly'],
+            ['Healthcare-Oriented', 'Healthcare Oriented'],
+            ['healthcare-oriented', 'healthcare oriented'],
+            ['Member-Oriented', 'Member Oriented'],
+            ['member-oriented', 'member oriented'],
+            ['Institutional-Grade', 'Institutional Grade'],
+            ['institutional-grade', 'institutional grade'],
+            ['Decision-Ready', 'Decision Ready'],
+            ['decision-ready', 'decision ready'],
+            ['Decision-Making', 'Decision Making'],
+            ['decision-making', 'decision making'],
+            ['Early-Stage', 'Early Stage'],
+            ['early-stage', 'early stage'],
+            ['Cost-Effective', 'Cost Effective'],
+            ['cost-effective', 'cost effective'],
+            ['Cost-Conscious', 'Cost Conscious'],
+            ['cost-conscious', 'cost conscious'],
+            ['Hand-in-Hand', 'Hand in Hand'],
+            ['hand-in-hand', 'hand in hand'],
+            ['Well-Positioned', 'Well Positioned'],
+            ['well-positioned', 'well positioned'],
+            ['Future-Ready', 'Future Ready'],
+            ['future-ready', 'future ready'],
+            ['Street-Facing', 'Street Facing'],
+            ['street-facing', 'street facing'],
+            ['Back-of-House', 'Back of House'],
+            ['back-of-house', 'back of house'],
+            ['Low-Maintenance', 'Low Maintenance'],
+            ['low-maintenance', 'low maintenance'],
+            ['Day-to-Day', 'Day to Day'],
+            ['day-to-day', 'day to day'],
+            ['Quality-Led', 'Quality Led'],
+            ['quality-led', 'quality led'],
+            ['Multi-Storey', 'Multi Storey'],
+            ['multi-storey', 'multi storey'],
+            ['Single-Storey', 'Single Storey'],
+            ['single-storey', 'single storey'],
+            ['High-Rise', 'High Rise'],
+            ['high-rise', 'high rise']
+        ];
+
+        let normalized = value;
+        replacements.forEach(([from, to]) => {
+            normalized = normalized.split(from).join(to);
+        });
+
+        return normalized;
+    }
+
+    function normalizeDocumentCopy() {
+        document.title = replaceKnownCopy(document.title);
+
+        const canonicalUrl = getCanonicalUrl();
+        const canonicalLink = document.querySelector('link[rel="canonical"]');
+        if (canonicalLink) {
+            canonicalLink.setAttribute('href', canonicalUrl);
+        }
+
+        document.querySelectorAll('meta[content]').forEach(meta => {
+            const property = meta.getAttribute('property') || meta.getAttribute('name') || '';
+            let value = meta.getAttribute('content') || '';
+
+            if (property === 'og:url') {
+                value = canonicalUrl;
+            } else {
+                value = replaceKnownCopy(value);
+            }
+
+            meta.setAttribute('content', value);
+        });
+
+        document.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
+            script.textContent = replaceKnownCopy(script.textContent);
+        });
+
+        document.querySelectorAll('[title], [alt], [aria-label], [placeholder]').forEach(element => {
+            ['title', 'alt', 'aria-label', 'placeholder'].forEach(attributeName => {
+                if (!element.hasAttribute(attributeName)) {
+                    return;
+                }
+
+                element.setAttribute(attributeName, replaceKnownCopy(element.getAttribute(attributeName)));
+            });
+        });
+
+        document.querySelectorAll('[href], [src]').forEach(element => {
+            ['href', 'src'].forEach(attributeName => {
+                if (!element.hasAttribute(attributeName)) {
+                    return;
+                }
+
+                const currentValue = element.getAttribute(attributeName) || '';
+                if (currentValue.includes('nephspace.co.ke')) {
+                    element.setAttribute(attributeName, currentValue.split('nephspace.co.ke').join('nephspaceelite.com'));
+                }
+            });
+        });
+
+        if (document.body) {
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+                acceptNode(node) {
+                    const parentTag = node.parentElement?.tagName;
+                    if (!node.nodeValue || !node.nodeValue.trim()) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+
+                    if (parentTag && ['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEXTAREA'].includes(parentTag)) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            });
+
+            const textNodes = [];
+            let currentNode = walker.nextNode();
+            while (currentNode) {
+                textNodes.push(currentNode);
+                currentNode = walker.nextNode();
+            }
+
+            textNodes.forEach(node => {
+                node.nodeValue = replaceKnownCopy(node.nodeValue);
+            });
+        }
     }
 
     function getFooterServicesMarkup() {

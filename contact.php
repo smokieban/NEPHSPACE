@@ -112,12 +112,12 @@ function sendAutoReply($config, $customerEmail, $customerName) {
     $mailer->Subject = 'Thank you for contacting NephSpace Elite Construction';
 
     $message = "Dear {$customerName},\n\n";
-    $message .= "Thank you for contacting NephSpace Elite Construction and Interiors Hub Ltd.\n\n";
+    $message .= "Thank you for contacting NephSpace Elite Construction.\n\n";
     $message .= "We have received your message and will get back to you as soon as possible.\n\n";
     $message .= "In the meantime, feel free to explore our services:\n";
-    $message .= "- Pre-FEED\n";
+    $message .= "- Pre FEED\n";
     $message .= "- FEED\n";
-    $message .= "- Pre-Construction\n";
+    $message .= "- Pre Construction\n";
     $message .= "- Construction Services\n";
     $message .= "- Procurement Services\n";
     $message .= "- Construction Management\n";
