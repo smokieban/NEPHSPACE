@@ -539,10 +539,10 @@ section {
 }
 
 .about-content .lead {
-    font-size: clamp(1.35rem, 1.1rem + 0.65vw, 1.85rem);
-    line-height: 1.9;
-    color: var(--secondary-color);
-    font-weight: 500;
+    font-size: var(--font-size-base);
+    line-height: 1.8;
+    color: var(--text-color);
+    font-weight: 400;
 }
 
 .expertise-section {
@@ -1437,7 +1437,8 @@ textarea.form-control {
     gap: 12px;
 }
 
-.footer-social a {
+.footer-social a,
+.footer-social .footer-social-placeholder {
     width: 40px;
     height: 40px;
     background: rgba(255,255,255,0.1);
@@ -1447,6 +1448,11 @@ textarea.form-control {
     align-items: center;
     justify-content: center;
     transition: var(--transition);
+}
+
+.footer-social .footer-social-placeholder {
+    opacity: 0.65;
+    cursor: default;
 }
 
 .footer-social a:hover {
@@ -1683,7 +1689,7 @@ textarea.form-control {
     }
 
     .about-content .lead {
-        font-size: 1.3rem;
+        font-size: var(--font-size-base);
         line-height: 1.8;
     }
 
@@ -1827,7 +1833,7 @@ textarea.form-control {
     }
 
     .about-content .lead {
-        font-size: 1.15rem;
+        font-size: var(--font-size-base);
     }
 
     .expertise-card h3 {

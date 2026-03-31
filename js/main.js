@@ -452,10 +452,11 @@
                             <p class="footer-tagline">Building Excellence, Defining Spaces</p>
                             <p>We deliver end to end solutions across Pre FEED, FEED, pre construction, construction, procurement, construction management, and facilities maintenance.</p>
                             <div class="footer-social">
-                                <a href="https://wa.me/254700903141?text=Hello%20NephSpace%20Elite%20Construction%2C%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" title="Chat with us on WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                                <a href="mailto:nephspaceconstruction1@gmail.com" aria-label="Send us an email" title="Send us an email"><i class="fas fa-envelope"></i></a>
-                                <a href="tel:+254700903141" aria-label="Call us" title="Call us"><i class="fas fa-phone"></i></a>
-                                <a href="https://www.google.com/maps?q=PRM6%2B22W%2C%20Mogotio%20Rd%2C%20Nairobi" target="_blank" rel="noopener noreferrer" aria-label="Open our office in Google Maps" title="Open our office in Google Maps"><i class="fas fa-map-marker-alt"></i></a>
+                                <a href="https://www.instagram.com/nephspaceelite_?igsh=bDBhYmhhb200Nmxz" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram" title="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+                                <a href="https://www.facebook.com/share/1DtiCUxpNU/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Facebook" title="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <span class="footer-social-placeholder" role="img" aria-label="LinkedIn link coming soon" title="LinkedIn link coming soon"><i class="fab fa-linkedin-in"></i></span>
+                                <span class="footer-social-placeholder" role="img" aria-label="Twitter link coming soon" title="Twitter link coming soon"><i class="fab fa-twitter"></i></span>
+                                <a href="https://www.tiktok.com/@nephspaceconstruction?_r=1&_t=ZS-94q9AA4xno0" target="_blank" rel="noopener noreferrer" aria-label="Follow us on TikTok" title="Follow us on TikTok"><i class="fab fa-tiktok"></i></a>
                             </div>
                         </div>
                     </div>
