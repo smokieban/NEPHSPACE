@@ -803,6 +803,50 @@
     <script src="js/main.js"></script>
     <script>
         (function () {
+            function closeAboutNavigation(sourceLink) {
+                const dropdownMenu = sourceLink ? sourceLink.closest('.dropdown-menu') : null;
+                const dropdownItem = dropdownMenu ? dropdownMenu.closest('.nav-item.dropdown') : null;
+                const dropdownToggle = dropdownItem ? dropdownItem.querySelector(':scope > .nav-link.dropdown-toggle') : null;
+                const navbarCollapse = document.querySelector('.navbar-collapse');
+                const navbarToggler = document.querySelector('.navbar-toggler');
+
+                if (dropdownToggle && typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
+                    bootstrap.Dropdown.getOrCreateInstance(dropdownToggle).hide();
+                } else {
+                    if (dropdownMenu) {
+                        dropdownMenu.classList.remove('show');
+                    }
+
+                    if (dropdownItem) {
+                        dropdownItem.classList.remove('show');
+                    }
+
+                    if (dropdownToggle) {
+                        dropdownToggle.setAttribute('aria-expanded', 'false');
+                    }
+                }
+
+                if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                    if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                        bootstrap.Collapse.getOrCreateInstance(navbarCollapse, { toggle: false }).hide();
+                    } else {
+                        navbarCollapse.classList.remove('show');
+                    }
+                }
+
+                if (navbarToggler) {
+                    navbarToggler.setAttribute('aria-expanded', 'false');
+                }
+
+                if (sourceLink) {
+                    sourceLink.blur();
+                }
+
+                if (dropdownToggle) {
+                    dropdownToggle.blur();
+                }
+            }
+
             function openAboutAccordion(hash) {
                 const targetHash = hash || window.location.hash;
                 if (!targetHash) {
@@ -834,19 +878,22 @@
                 openAboutAccordion(window.location.hash);
 
                 document.querySelectorAll('.about-section-link').forEach(function (link) {
-                    link.addEventListener('click', function () {
+                    link.addEventListener('click', function (event) {
                         const href = this.getAttribute('href') || '';
                         const hashIndex = href.indexOf('#');
                         const hash = hashIndex >= 0 ? href.slice(hashIndex) : '';
 
-                        const navbarCollapse = document.querySelector('.navbar-collapse');
-                        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
-                            navbarCollapse.classList.remove('show');
-                        }
+                        closeAboutNavigation(this);
 
-                        window.setTimeout(function () {
+                        if (hash) {
+                            event.preventDefault();
+
+                            if (window.location.hash !== hash) {
+                                history.pushState(null, '', hash);
+                            }
+
                             openAboutAccordion(hash);
-                        }, 40);
+                        }
                     });
                 });
             });

@@ -394,6 +394,50 @@
         return currentPage === 'articles.html' || currentPage === 'testimonials.html';
     }
 
+    function closeNavbarDropdownSelection(sourceLink) {
+        const dropdownMenu = sourceLink ? sourceLink.closest('.dropdown-menu') : null;
+        const dropdownItem = dropdownMenu ? dropdownMenu.closest('.nav-item.dropdown') : null;
+        const dropdownToggle = dropdownItem ? dropdownItem.querySelector(':scope > .nav-link.dropdown-toggle') : null;
+        const navbarCollapse = document.querySelector('.navbar-collapse');
+        const navbarToggler = document.querySelector('.navbar-toggler');
+
+        if (dropdownToggle && typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
+            bootstrap.Dropdown.getOrCreateInstance(dropdownToggle).hide();
+        } else {
+            if (dropdownMenu) {
+                dropdownMenu.classList.remove('show');
+            }
+
+            if (dropdownItem) {
+                dropdownItem.classList.remove('show');
+            }
+
+            if (dropdownToggle) {
+                dropdownToggle.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                bootstrap.Collapse.getOrCreateInstance(navbarCollapse, { toggle: false }).hide();
+            } else {
+                navbarCollapse.classList.remove('show');
+            }
+        }
+
+        if (navbarToggler) {
+            navbarToggler.setAttribute('aria-expanded', 'false');
+        }
+
+        if (sourceLink) {
+            sourceLink.blur();
+        }
+
+        if (dropdownToggle) {
+            dropdownToggle.blur();
+        }
+    }
+
     function setupDesktopDropdowns() {
         document.querySelectorAll('.navbar .nav-item.dropdown').forEach(dropdown => {
             if (dropdown.dataset.hoverReady === 'true') {
@@ -430,6 +474,15 @@
                     event.preventDefault();
                     closeDropdown();
                 }
+            });
+            menu.addEventListener('click', event => {
+                const dropdownLink = event.target.closest('.dropdown-item');
+
+                if (!dropdownLink) {
+                    return;
+                }
+
+                closeNavbarDropdownSelection(dropdownLink);
             });
 
             dropdown.dataset.hoverReady = 'true';
