@@ -565,7 +565,15 @@
     function getCanonicalUrl() {
         const currentPage = getCurrentPage();
         const path = currentPage === 'index.html' ? '/' : `/${currentPage}`;
-        const query = window.location.search || '';
+
+        if (currentPage === 'project-detail.html') {
+            const params = new URLSearchParams(window.location.search);
+            const project = params.get('project');
+            const query = project ? `?project=${encodeURIComponent(project)}` : '';
+            return `https://nephspaceelite.com${path}${query}`;
+        }
+
+        const query = '';
         return `https://nephspaceelite.com${path}${query}`;
     }
 
