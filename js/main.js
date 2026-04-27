@@ -1,10 +1,13 @@
 /**
- * NephSpace Elite Construction - Main JavaScript
+ * Nephspace Elite Construction and Interiors Hub Ltd - Main JavaScript
  * Building Excellence, Defining Spaces
  */
 
 (function() {
     'use strict';
+
+    const COMPANY_NAME = 'Nephspace Elite Construction';
+    const COMPANY_NAME_ENCODED = 'Nephspace%20Elite%20Construction%20and%20Interiors%20Hub%20Ltd';
 
     const navbarContactDetails = [
         { label: 'Call us', iconClass: 'fas fa-phone-alt', href: 'tel:+254700903141', value: '+254700903141' },
@@ -13,12 +16,12 @@
 
     const serviceDropdownLinks = [
         { page: 'services.html', iconClass: 'fas fa-layer-group', href: 'services.html', label: 'All Services' },
-        { page: 'pre-feed.html', iconClass: 'fas fa-lightbulb', href: 'pre-feed.html', label: 'Pre FEED' },
-        { page: 'feed.html', iconClass: 'fas fa-sitemap', href: 'feed.html', label: 'FEED' },
-        { page: 'pre-construction.html', iconClass: 'fas fa-clipboard-list', href: 'pre-construction.html', label: 'Pre Construction' },
-        { page: 'construction-services.html', iconClass: 'fas fa-hard-hat', href: 'construction-services.html', label: 'Construction' },
-        { page: 'procurement-services.html', iconClass: 'fas fa-truck', href: 'procurement-services.html', label: 'Procurement' },
-        { page: 'construction-management.html', iconClass: 'fas fa-diagram-project', href: 'construction-management.html', label: 'Construction Management' },
+        { page: 'pre-feed.html', iconClass: 'fas fa-lightbulb', href: 'pre-feed.html', label: 'Preliminary Front-End Engineering and Design (Pre-FEED)' },
+        { page: 'feed.html', iconClass: 'fas fa-sitemap', href: 'feed.html', label: 'Front-End Engineering and Design (FEED)' },
+        { page: 'pre-construction.html', iconClass: 'fas fa-clipboard-list', href: 'pre-construction.html', label: 'Pre-Construction & Early Contractor Engagement' },
+        { page: 'construction-services.html', iconClass: 'fas fa-hard-hat', href: 'construction-services.html', label: 'Construction Services' },
+        { page: 'procurement-services.html', iconClass: 'fas fa-truck', href: 'procurement-services.html', label: 'Procurement Services' },
+        { page: 'construction-management.html', iconClass: 'fas fa-diagram-project', href: 'construction-management.html', label: 'Construction Management Services' },
         { page: 'facilities-maintenance.html', iconClass: 'fas fa-screwdriver-wrench', href: 'facilities-maintenance.html', label: 'Facilities Maintenance' }
     ];
 
@@ -155,12 +158,19 @@
             const navList = navbarElement.querySelector('.navbar-nav');
 
             if (brand) {
-                brand.setAttribute('aria-label', 'NephSpace Elite Construction');
-                brand.setAttribute('title', 'NephSpace Elite Construction');
+                brand.setAttribute('aria-label', COMPANY_NAME);
+                brand.setAttribute('title', COMPANY_NAME);
                 brand.setAttribute('href', 'index.html');
+
+                const brandLogo = brand.querySelector('.brand-logo');
+                if (brandLogo) {
+                    brandLogo.setAttribute('alt', `${COMPANY_NAME} logo`);
+                }
+
                 brand.insertAdjacentHTML('beforeend', `
                     <span class="brand-copy">
-                        <span class="brand-name">NEPHSPACE ELITE</span>
+                        <span class="brand-name">Nephspace Elite Construction</span>
+                        <span class="brand-tagline">and Interiors Hub Ltd</span>
                     </span>
                 `);
             }
@@ -191,6 +201,14 @@
 
             collapse.insertBefore(contactWrapper, navList);
             contactWrapper.innerHTML = getNavbarContactMarkup();
+        });
+
+        document.querySelectorAll('.floating-whatsapp').forEach(link => {
+            link.setAttribute('aria-label', `Chat with ${COMPANY_NAME} on WhatsApp`);
+            link.setAttribute('title', `Chat with ${COMPANY_NAME} on WhatsApp`);
+
+            const href = link.getAttribute('href') || '';
+            link.setAttribute('href', href.replace('NephSpace%20Elite%20Construction', COMPANY_NAME_ENCODED));
         });
 
         setupDesktopDropdowns();
@@ -501,7 +519,7 @@
                 <div class="row g-4">
                     <div class="col-lg-4 col-md-6">
                         <div class="footer-widget">
-                            <h4 class="footer-title">NephSpace Elite Construction</h4>
+                            <h4 class="footer-title">${COMPANY_NAME}</h4>
                             <p class="footer-tagline">Building Excellence, Defining Spaces</p>
                             <p>We deliver end to end solutions across Pre FEED, FEED, pre construction, construction, procurement, construction management, and facilities maintenance.</p>
                             <div class="footer-social">
@@ -548,7 +566,7 @@
                 <hr class="footer-divider">
                 <div class="row">
                     <div class="col-md-6 text-center text-md-start">
-                        <p class="copyright">&copy; ${currentYear} NephSpace Elite Construction. All rights reserved.</p>
+                        <p class="copyright">&copy; ${currentYear} ${COMPANY_NAME}. All rights reserved.</p>
                     </div>
                     <div class="col-md-6 text-center text-md-end">
                         <ul class="footer-bottom-links">
@@ -582,25 +600,25 @@
             return value;
         }
 
+        let normalized = value
+            .replace(/NephSpace Elite Construction(?: &amp; Interiors Hub Limited| & Interiors Hub Limited| &amp; Interiors Hub| & Interiors Hub)/g, COMPANY_NAME)
+            .replace(/Nephspace Elite Construction(?: &amp; Interiors Hub Limited| & Interiors Hub Limited| &amp; Interiors Hub| & Interiors Hub)/g, COMPANY_NAME)
+            .replace(/NEPHSPACE Elite Construction(?! and Interiors Hub Ltd)(?! &amp; Interiors Hub(?: Limited)?)(?! & Interiors Hub(?: Limited)?)/g, COMPANY_NAME)
+            .replace(/NephSpace Elite Construction(?! and Interiors Hub Ltd)(?! &amp; Interiors Hub(?: Limited)?)(?! & Interiors Hub(?: Limited)?)/g, COMPANY_NAME)
+            .replace(/Nephspace Elite Construction(?! and Interiors Hub Ltd)(?! &amp; Interiors Hub(?: Limited)?)(?! & Interiors Hub(?: Limited)?)/g, COMPANY_NAME);
+
         const replacements = [
             ['https://nephspace.co.ke', 'https://nephspaceelite.com'],
             ['nephspace.co.ke', 'nephspaceelite.com'],
-            ['NephSpace Elite Construction and Interiors Hub Ltd', 'NephSpace Elite Construction'],
-            ['NephSpace Elite Construction & Interiors Hub Limited', 'NephSpace Elite Construction'],
-            ['NephSpace Elite Construction & Interiors Hub', 'NephSpace Elite Construction'],
-            ['Nephspace Elite Construction & Interiors Hub Limited', 'NephSpace Elite Construction'],
-            ['Nephspace Elite Construction & Interiors Hub', 'NephSpace Elite Construction'],
-            ['Nephspace Elite Construction', 'NephSpace Elite Construction'],
+            ['NephSpace Elite Construction and Interiors Hub Ltd', COMPANY_NAME],
+            ['NephSpace Elite Construction & Interiors Hub Limited', COMPANY_NAME],
+            ['NephSpace Elite Construction & Interiors Hub', COMPANY_NAME],
+            ['Nephspace Elite Construction & Interiors Hub Limited', COMPANY_NAME],
+            ['Nephspace Elite Construction & Interiors Hub', COMPANY_NAME],
             ['End-to-End', 'End to End'],
             ['end-to-end', 'end to end'],
             ['Design-Build', 'Design Build'],
             ['design-build', 'design build'],
-            ['Pre-Construction', 'Pre Construction'],
-            ['pre-construction', 'pre construction'],
-            ['Pre-FEED', 'Pre FEED'],
-            ['pre-feed', 'pre feed'],
-            ['Front-End', 'Front End'],
-            ['front-end', 'front end'],
             ['Fit-Outs', 'Fit Outs'],
             ['fit-outs', 'fit outs'],
             ['Fit-Out', 'Fit Out'],
@@ -613,10 +631,6 @@
             ['long-term', 'long term'],
             ['High-Quality', 'High Quality'],
             ['high-quality', 'high quality'],
-            ['High-End', 'High End'],
-            ['high-end', 'high end'],
-            ['High-Stakes', 'High Stakes'],
-            ['high-stakes', 'high stakes'],
             ['High-Value', 'High Value'],
             ['high-value', 'high value'],
             ['High-Definition', 'High Definition'],
@@ -647,24 +661,16 @@
             ['decision-making', 'decision making'],
             ['Early-Stage', 'Early Stage'],
             ['early-stage', 'early stage'],
-            ['Real-Estate', 'Real Estate'],
-            ['real-estate', 'real estate'],
-            ['Cost-Effective', 'Cost Effective'],
-            ['cost-effective', 'cost effective'],
             ['Cost-Efficient', 'Cost Efficient'],
             ['cost-efficient', 'cost efficient'],
             ['Cost-Conscious', 'Cost Conscious'],
             ['cost-conscious', 'cost conscious'],
-            ['Data-Driven', 'Data Driven'],
-            ['data-driven', 'data driven'],
             ['Hand-in-Hand', 'Hand in Hand'],
             ['hand-in-hand', 'hand in hand'],
             ['On-Time', 'On Time'],
             ['on-time', 'on time'],
             ['On-Budget', 'On Budget'],
             ['on-budget', 'on budget'],
-            ['On-Site', 'On Site'],
-            ['on-site', 'on site'],
             ['Well-Positioned', 'Well Positioned'],
             ['well-positioned', 'well positioned'],
             ['Well-Informed', 'Well Informed'],
@@ -681,8 +687,6 @@
             ['back-of-house', 'back of house'],
             ['Site-Ready', 'Site Ready'],
             ['site-ready', 'site ready'],
-            ['Site-Specific', 'Site Specific'],
-            ['site-specific', 'site specific'],
             ['Low-Maintenance', 'Low Maintenance'],
             ['low-maintenance', 'low maintenance'],
             ['Day-to-Day', 'Day to Day'],
@@ -703,8 +707,6 @@
             ['white-glove', 'white glove'],
             ['Game-Changer', 'Game Changer'],
             ['game-changer', 'game changer'],
-            ['Real-Time', 'Real Time'],
-            ['real-time', 'real time'],
             ['Escrow-Style', 'Escrow Style'],
             ['escrow-style', 'escrow style'],
             ['Zero-Harm', 'Zero Harm'],
@@ -743,7 +745,6 @@
             ['OSHA-aligned', 'OSHA aligned']
         ];
 
-        let normalized = value;
         replacements.forEach(([from, to]) => {
             normalized = normalized.split(from).join(to);
         });
@@ -1099,7 +1100,7 @@
         clearInterval(testimonialInterval);
 
         if (testimonials.length === 0) {
-            testimonialsSlider.innerHTML = '<div class="testimonial-empty-state">Be the first to share your experience with NephSpace Elite Construction.</div>';
+            testimonialsSlider.innerHTML = `<div class="testimonial-empty-state">Be the first to share your experience with ${COMPANY_NAME}.</div>`;
             testimonialItems = [];
             return;
         }

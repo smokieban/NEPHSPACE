@@ -163,6 +163,7 @@ section {
 .brand-copy {
     display: flex;
     flex-direction: column;
+    max-width: 260px;
 }
 
 .navbar-layout {
@@ -227,15 +228,20 @@ section {
 
 .brand-name {
     font-family: var(--font-family-base);
-    font-size: 26px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--dark-color);
-    white-space: nowrap;
-    text-transform: uppercase;
+    line-height: 1.25;
+    white-space: normal;
+    text-transform: none;
 }
 
 .brand-tagline {
-    display: none;
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--dark-color);
+    line-height: 1.2;
 }
 
 .navbar-nav .nav-link {
@@ -710,10 +716,10 @@ section {
     color: var(--dark-color);
     max-width: 100%;
     width: 100%;
-    font-size: clamp(2rem, 1.25rem + 1.45vw, 3rem);
+    font-size: clamp(1.9rem, 1.45rem + 0.9vw, 2.35rem);
     font-weight: 800;
     letter-spacing: -0.03em;
-    line-height: 1.08;
+    line-height: 1.2;
 }
 
 .about-hub-feature .section-subtitle,
@@ -1118,12 +1124,13 @@ section {
 }
 
 .about-accordion-title-text {
-    font-size: clamp(1.2rem, 1rem + 0.55vw, 1.7rem);
+    font-size: clamp(1.05rem, 0.94rem + 0.35vw, 1.3rem);
     font-weight: 800;
-    letter-spacing: -0.025em;
+    letter-spacing: 0.08em;
     color: var(--dark-color);
     line-height: 1.18;
     transition: color 0.25s ease;
+    text-transform: uppercase;
 }
 
 .about-accordion-summary {
@@ -1475,8 +1482,9 @@ section {
 }
 
 .expertise-card h3 {
-    font-size: 24px;
+    font-size: clamp(1.3rem, 1.15rem + 0.25vw, 1.5rem);
     margin-bottom: 12px;
+    line-height: 1.25;
 }
 
 .expertise-card p {
@@ -1554,9 +1562,10 @@ section {
 }
 
 .service-card h3 {
-    font-size: 24px;
+    font-size: clamp(1.3rem, 1.15rem + 0.25vw, 1.5rem);
     margin-bottom: 15px;
     color: var(--dark-color);
+    line-height: 1.25;
 }
 
 .service-card p {
@@ -2788,8 +2797,16 @@ textarea.form-control {
         height: 40px;
     }
 
+    .brand-copy {
+        max-width: 200px;
+    }
+
     .brand-name {
-        font-size: 20px;
+        font-size: 13px;
+    }
+
+    .brand-tagline {
+        font-size: 11px;
     }
 
     .hero-title {
@@ -2951,9 +2968,10 @@ textarea.form-control {
 }
 
 .mission-vision-card h3 {
-    font-size: 24px;
+    font-size: clamp(1.3rem, 1.15rem + 0.25vw, 1.5rem);
     margin-bottom: 15px;
     color: var(--dark-color);
+    line-height: 1.25;
 }
 
 .mission-vision-card p {
@@ -2986,9 +3004,10 @@ textarea.form-control {
 }
 
 .value-card h4 {
-    font-size: 20px;
+    font-size: clamp(1.15rem, 1.05rem + 0.2vw, 1.3rem);
     margin-bottom: 15px;
     color: var(--dark-color);
+    line-height: 1.3;
 }
 
 .value-card p {
@@ -3216,9 +3235,10 @@ textarea.form-control {
 }
 
 .service-detail-content h3 {
-    font-size: 32px;
+    font-size: clamp(1.9rem, 1.45rem + 0.9vw, 2.35rem);
     margin-bottom: 15px;
     color: var(--dark-color);
+    line-height: 1.2;
 }
 
 .service-detail-content .lead {
@@ -3306,9 +3326,10 @@ textarea.form-control {
 }
 
 .process-card h4 {
-    font-size: 20px;
+    font-size: clamp(1.15rem, 1.05rem + 0.2vw, 1.3rem);
     margin-bottom: 12px;
     color: var(--dark-color);
+    line-height: 1.3;
 }
 
 .process-card p {
@@ -3843,6 +3864,10 @@ textarea.modern-form-control {
     transition: var(--transition);
 }
 
+.fa-siren-on::before {
+    content: "\f0f3";
+}
+
 .feature-box-detailed:hover .feature-icon-detailed {
     background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
 }
@@ -3852,9 +3877,10 @@ textarea.modern-form-control {
 }
 
 .feature-box-detailed h4 {
-    font-size: 20px;
+    font-size: clamp(1.15rem, 1.05rem + 0.2vw, 1.3rem);
     margin-bottom: 15px;
     color: var(--dark-color);
+    line-height: 1.3;
 }
 
 .feature-box-detailed p {
