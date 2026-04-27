@@ -5,6 +5,8 @@ require_once __DIR__ . '/testimonials.lib.php';
 $config = loadTestimonialsConfig();
 startTestimonialsSession($config['session_name']);
 
+header('X-Robots-Tag: noindex, nofollow', true);
+
 $errorMessage = '';
 $successMessage = isset($_GET['logged_in'])
     ? 'Signed in successfully.'
@@ -64,6 +66,7 @@ function testimonialsAdminDate($value) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Testimonials Admin | NephSpace Elite Construction</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">

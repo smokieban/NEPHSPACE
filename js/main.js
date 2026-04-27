@@ -1167,15 +1167,6 @@
         });
     }
 
-    // ===== Lightbox Configuration =====
-    if (typeof lightbox !== 'undefined') {
-        lightbox.option({
-            'resizeDuration': 200,
-            'wrapAround': true,
-            'albumLabel': 'Project %1 of %2'
-        });
-    }
-
     // ===== Preloader (Optional) =====
     window.addEventListener('load', function() {
         document.body.classList.add('loaded');
