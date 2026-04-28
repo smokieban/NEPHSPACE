@@ -32,7 +32,15 @@ body {
     font-size: var(--font-size-base);
     color: var(--text-color);
     line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    font-kerning: normal;
+    word-spacing: normal;
     overflow-x: hidden;
+}
+
+p,
+li {
+    word-spacing: normal;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -239,9 +247,18 @@ section {
 .brand-tagline {
     display: block;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
     color: var(--dark-color);
     line-height: 1.2;
+}
+
+.term-emphasis {
+    display: inline;
+    font-weight: 700;
+    color: inherit;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-align: inherit;
 }
 
 .navbar-nav .nav-link {

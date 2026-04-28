@@ -7,7 +7,182 @@
     'use strict';
 
     const COMPANY_NAME = 'Nephspace Elite Construction';
+    const COMPANY_NAME_LONG = 'Nephspace Elite Construction & Interiors Hub Limited';
     const COMPANY_NAME_ENCODED = 'Nephspace%20Elite%20Construction%20and%20Interiors%20Hub%20Ltd';
+    const EMPHASIS_TERMS = [
+        'Meticulous Planning',
+        'Accurate Cost Estimation',
+        'Proactive Risk Management',
+        'Turnkey Solutions',
+        'On-Time, On-Budget Delivery',
+        'Value Engineering',
+        'Resource Optimization',
+        'Global Sourcing & Curation',
+        'Expert Customs Management',
+        'White-Glove On-Site Delivery',
+        'Superior Quality',
+        'Cost Efficiency',
+        'Timely Delivery',
+        'Rigorous Material Testing',
+        'Expert Craftsmanship',
+        'Performance Benchmarking',
+        'Material Durability',
+        'Precision Finish',
+        'Compliance & Safety',
+        'Visual Transparency',
+        'Risk Mitigation',
+        'Cost & Schedule Certainty',
+        '24/7 Digital Access',
+        'Proactive Milestone Reports',
+        'Direct Access to Project Experts',
+        'Virtual Site Supervision',
+        'Secure Financial Oversight',
+        'Legal & Regulatory Compliance',
+        'Proactive Risk Mitigation',
+        'Certified Compliance',
+        'Asset & Site Security',
+        'Kenya and Africa',
+        'Nephspace Elite Construction & Interiors Hub Limited',
+        'Nephspace Elite Construction and Interiors Hub Ltd',
+        'NephSpace Elite Construction & Interiors Hub Limited',
+        'NephSpace Elite Construction and Interiors Hub Ltd',
+        'single point of contact',
+        'Kenyan and International safety regulations.',
+        'international excellence standards',
+        'Building Information Modeling',
+        'structured oversight that guarantees performance-driven results, on time and within budget',
+        'high-end construction project management and luxury interior execution in Nairobi, all over Kenya and across Africa',
+        'on-site waste, delays, and stock-out risks',
+        'provide real-time tracking of materials and equipment',
+        'project scope',
+        'highly skilled specialist subcontractors',
+        'fast-track customs clearance',
+        'global sourcing',
+        'ISO quality standards',
+        'high-quality construction materials',
+        'luxury interior finishes',
+        'sourced efficiently, delivered on time, and aligned with your project budget',
+        'end-to-end procurement and supply chain partner in Nairobi, Kenya and Across Africa',
+        'Architectural Design, Quantity Surveying (QS)/ Cost Estimation, Contract Management, Quality Control and Project Management in Kenya and across Africa',
+        'compliance and certification',
+        'local and international regulatory safety standards',
+        'energy efficiency, safety, and technological innovation',
+        'Smart Building automation and SCADA systems',
+        'electrical and instrumentation works in Nairobi and across Kenya',
+        'mechanical systems fabrication and installation across Kenya',
+        'commercial and industrial clients',
+        'modern design trends and luxury aesthetics',
+        'high-end interior fit-out solutions in Nairobi and across Kenya',
+        'structural integrity and sustainable engineering',
+        'utility ducts, access roads, and drainage systems',
+        'civil engineering and structural construction services in Nairobi and across Kenya',
+        'civil infrastructure and structural engineering to luxury interior finishes and advanced building systems',
+        'comprehensive construction services in Nairobi and across Kenya',
+        'technical expertise, innovation, and cost-efficient solutions',
+        'international sourcing',
+        'mitigation strategies',
+        'construction timelines',
+        'Value Engineering (VE)',
+        '100% buildable',
+        'pre-construction consulting',
+        'Environmental Impact Assessments (EIA',
+        '100% compliant with local and international law',
+        'regulatory approvals',
+        'premium materials at competitive rates',
+        'RFPs and EOIs',
+        'procurement strategy',
+        'smooth, predictable project execution',
+        'supply chain shifts to site constraints',
+        'resource optimization',
+        'Critical Path Method (CPM)',
+        'CAPEX planning',
+        'Class 3 Cost Estimates',
+        'load-bearing standards',
+        'high-fidelity engineering documentation',
+        'industrial, technology, healthcare, and large-scale commercial projects',
+        'performance, ROI, and regulatory certainty',
+        'global compliance standards',
+        'years of industry expertise, data-driven planning',
+        'FEED engineering services in Nairobi, Kenya',
+        'Work Breakdown Structures (WBS)',
+        'Capital Expenditure (CAPEX) baselines',
+        'Feasibility Analysis',
+        'Basis of Design (BOD)',
+        'fixed Scope of Work (SoW)',
+        'bankable investment opportunities',
+        'Pre-FEED services',
+        'end-to-end design-build solutions in Nairobi, Kenya, combining architectural innovation, world-class engineering, and premium finishes',
+        'Building Excellence, Defining Spaces',
+        'personalized consultation and safety plan',
+        'safely, efficiently, and with full compliance',
+        'site logistics and monitoring',
+        'audit ready',
+        'NCA project registration to strict PPE enforcement',
+        'daily site-specific risk assessments (RAMS)',
+        '100% regulatory compliance',
+        'Nairobi, Kenya, and Africa.',
+        'NCA certified safety protocols',
+        'OSHA aligned hazard controls',
+        'trusted diaspora construction solutions',
+        'NCA registration to local council approvals',
+        'escrow-style payment milestones',
+        'Bills of Quantities (BOQs',
+        'maximum accountability',
+        'Digital Investor Portal',
+        'Kenyan living abroad',
+        'international investor, NGO',
+        'corporate client',
+        'real-time visibility, financial accountability, and compliance assurance',
+        'end-to-end construction services for diaspora clients across Kenya and Africa',
+        'reliable, transparent construction services in Nairobi and across Kenya',
+        'direct communication with your Project Lead',
+        'weekly structured reports',
+        'client portal',
+        'absolute transparency, accountability, and proactive communication',
+        'real-time progress tracking and site updates to integrated budget monitoring',
+        'construction project management software',
+        'construction company in Nairobi, Kenya',
+        'consultation or project quote.',
+        'modern construction company in Nairobi',
+        'data-driven planning and simulation',
+        '25%',
+        'on time and within budget',
+        'MEP (Mechanical, Electrical, and Plumbing) clashes',
+        'virtually walk through your space',
+        'residential, commercial, and office projects',
+        'Building Information Modeling (BIM)',
+        'Virtual Design & Construction (VDC)',
+        'digital twin',
+        'reliable construction company in Nairobi',
+        'quality assurance, compliance, and precision engineering',
+        'high-quality construction and interior solutions in Nairobi, Kenya, and across Africa',
+        'HVAC and lighting to acoustics and structural elements',
+        'millimeter level precision',
+        'high-end construction and finishing services in Nairobi and across Kenya',
+        'skilled architects, engineers, and interior specialists',
+        'construction materials and interior finishes in Kenya',
+        'structural integrity, durability, and premium quality standards.',
+        'luxury residential development, commercial construction project, or office fit-out in Nairobi',
+        'durability, precision, and high-end aesthetics',
+        'Quality Management System (QMS)',
+        'construction and interior design company in Nairobi, Kenya',
+        'ISO-certified quality standards.',
+        'construction materials procurement in Kenya and across Africa',
+        'reliable procurement services in Nairobi and across Kenya',
+        'construction material sourcing in Nairobi, Kenya',
+        'homeowners, corporate clients, diaspora investors, institutions and international clients, providing high-value, reliable construction and interior services',
+        'residential, industrial, commercial, technological, institutional, healthcare, hospitality and office projects in Nairobi, Kenya, as well as other parts of Kenya and globally, with a focus on strategic planning, value engineering, and efficient resource management',
+        'on time, within budget, and of the highest quality',
+        'homeowners, corporates, institutions, diaspora investors, and international clients, delivering projects on time, within budget, and to the highest quality standards',
+        'offers fully integrated construction and interior design solutions for residential, industrial, commercial, technological, institutional, healthcare, hospitality and office projects in Nairobi, Kenya, as well as other parts of Kenya and across Africa',
+        'end-to-end approach'
+    ];
+    const EMPHASIS_TERMS_WITHOUT_NORMALIZATION = new Set([
+        COMPANY_NAME_LONG
+    ]);
+    const TAGLINE_EMPHASIS_EXCLUSIONS = new Set([
+        COMPANY_NAME_LONG.toLowerCase()
+    ]);
 
     const navbarContactDetails = [
         { label: 'Call us', iconClass: 'fas fa-phone-alt', href: 'tel:+254700903141', value: '+254700903141' },
@@ -81,7 +256,11 @@
     normalizeBranding();
     renderSharedFooter();
     normalizeDocumentCopy();
-    window.addEventListener('load', normalizeDocumentCopy);
+    emphasizeConfiguredTerms();
+    window.addEventListener('load', () => {
+        normalizeDocumentCopy();
+        emphasizeConfiguredTerms();
+    });
 
     window.addEventListener('scroll', function() {
         if (navbar && window.scrollY > 100) {
@@ -601,20 +780,28 @@
         }
 
         let normalized = value
-            .replace(/NephSpace Elite Construction(?: &amp; Interiors Hub Limited| & Interiors Hub Limited| &amp; Interiors Hub| & Interiors Hub)/g, COMPANY_NAME)
-            .replace(/Nephspace Elite Construction(?: &amp; Interiors Hub Limited| & Interiors Hub Limited| &amp; Interiors Hub| & Interiors Hub)/g, COMPANY_NAME)
+            .replace(/NephSpace Elite Construction(?: &amp; Interiors Hub Limited| & Interiors Hub Limited| &amp; Interiors Hub| & Interiors Hub)/g, COMPANY_NAME_LONG)
+            .replace(/Nephspace Elite Construction(?: &amp; Interiors Hub Limited| & Interiors Hub Limited| &amp; Interiors Hub| & Interiors Hub)/g, COMPANY_NAME_LONG)
             .replace(/NEPHSPACE Elite Construction(?! and Interiors Hub Ltd)(?! &amp; Interiors Hub(?: Limited)?)(?! & Interiors Hub(?: Limited)?)/g, COMPANY_NAME)
             .replace(/NephSpace Elite Construction(?! and Interiors Hub Ltd)(?! &amp; Interiors Hub(?: Limited)?)(?! & Interiors Hub(?: Limited)?)/g, COMPANY_NAME)
-            .replace(/Nephspace Elite Construction(?! and Interiors Hub Ltd)(?! &amp; Interiors Hub(?: Limited)?)(?! & Interiors Hub(?: Limited)?)/g, COMPANY_NAME);
+            .replace(/Nephspace Elite Construction(?! and Interiors Hub Ltd)(?! &amp; Interiors Hub(?: Limited)?)(?! & Interiors Hub(?: Limited)?)/g, COMPANY_NAME)
+            .replace(/\bLimited(?:\s+Limited)+\b/g, 'Limited')
+            .replace(/\bLtd(?:\s+Ltd)+\b/g, 'Ltd')
+            .replace(/\bLimited\s+Ltd\b/g, 'Limited');
 
         const replacements = [
             ['https://nephspace.co.ke', 'https://nephspaceelite.com'],
             ['nephspace.co.ke', 'nephspaceelite.com'],
-            ['NephSpace Elite Construction and Interiors Hub Ltd', COMPANY_NAME],
-            ['NephSpace Elite Construction & Interiors Hub Limited', COMPANY_NAME],
-            ['NephSpace Elite Construction & Interiors Hub', COMPANY_NAME],
-            ['Nephspace Elite Construction & Interiors Hub Limited', COMPANY_NAME],
-            ['Nephspace Elite Construction & Interiors Hub', COMPANY_NAME],
+            ['NephSpace Elite Construction and Interiors Hub Ltd', COMPANY_NAME_LONG],
+            ['NephSpace Elite Construction & Interiors Hub Limited', COMPANY_NAME_LONG],
+            ['NephSpace Elite Construction & Interiors Hub', COMPANY_NAME_LONG],
+            ['Nephspace Elite Construction & Interiors Hub Limited', COMPANY_NAME_LONG],
+            ['more than just a vendor, we are your strategic procurement and supply chain partner', 'your strategic procurement and supply chain partner'],
+            ['across Kenya and across Africa', 'across Kenya and Africa'],
+            ['across Kenya, and across Africa', 'across Kenya and Africa'],
+            ['all over Kenya and across Africa', 'across Kenya and Africa'],
+            ['in Nairobi, across Kenya and Africa', 'in Nairobi and across Kenya and Africa'],
+            ['in Nairobi, across Kenya, and Africa', 'in Nairobi and across Kenya and Africa'],
             ['End-to-End', 'End to End'],
             ['end-to-end', 'end to end'],
             ['Design-Build', 'Design Build'],
@@ -749,6 +936,11 @@
             normalized = normalized.split(from).join(to);
         });
 
+        normalized = normalized
+            .replace(/\bLimited(?:\s+Limited)+\b/g, 'Limited')
+            .replace(/\bLtd(?:\s+Ltd)+\b/g, 'Ltd')
+            .replace(/\bLimited\s+Ltd\b/g, 'Limited');
+
         return normalized;
     }
 
@@ -828,6 +1020,166 @@
                 node.nodeValue = replaceKnownCopy(node.nodeValue);
             });
         }
+    }
+
+    function emphasizeConfiguredTerms() {
+        if (!document.body) {
+            return;
+        }
+
+        const emphasisTerms = Array.from(new Set(
+            EMPHASIS_TERMS.flatMap(getEmphasisTermVariants)
+        )).sort((a, b) => b.length - a.length);
+
+        if (emphasisTerms.length === 0) {
+            normalizeEmphasisSpacing();
+            return;
+        }
+
+        const emphasisPattern = new RegExp(`(${emphasisTerms.map(escapeRegExp).join('|')})`, 'gi');
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+            acceptNode(node) {
+                const parentElement = node.parentElement;
+                const parentTag = parentElement?.tagName;
+
+                if (!node.nodeValue || !node.nodeValue.trim()) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+
+                if (parentTag && ['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEXTAREA', 'OPTION'].includes(parentTag)) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+
+                if (parentElement?.closest('.term-emphasis')) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+
+                emphasisPattern.lastIndex = 0;
+                return emphasisPattern.test(node.nodeValue)
+                    ? NodeFilter.FILTER_ACCEPT
+                    : NodeFilter.FILTER_REJECT;
+            }
+        });
+
+        const textNodes = [];
+        let currentNode = walker.nextNode();
+        while (currentNode) {
+            textNodes.push(currentNode);
+            currentNode = walker.nextNode();
+        }
+
+        textNodes.forEach(node => {
+            const text = node.nodeValue || '';
+            const insideNavbarTagline = Boolean(node.parentElement?.closest('.brand-tagline'));
+            emphasisPattern.lastIndex = 0;
+            const matches = Array.from(text.matchAll(emphasisPattern));
+
+            if (matches.length === 0 || !node.parentNode) {
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+            let lastIndex = 0;
+
+            matches.forEach(match => {
+                const matchedText = match[0];
+                const matchIndex = match.index ?? 0;
+
+                if (matchIndex > lastIndex) {
+                    fragment.appendChild(document.createTextNode(text.slice(lastIndex, matchIndex)));
+                }
+
+                const shouldSkipEmphasis = insideNavbarTagline && TAGLINE_EMPHASIS_EXCLUSIONS.has(matchedText.trim().toLowerCase());
+                if (shouldSkipEmphasis) {
+                    fragment.appendChild(document.createTextNode(matchedText));
+                } else {
+                    const emphasisElement = document.createElement('strong');
+                    emphasisElement.className = 'term-emphasis';
+                    emphasisElement.textContent = matchedText;
+                    fragment.appendChild(emphasisElement);
+                }
+
+                lastIndex = matchIndex + matchedText.length;
+            });
+
+            if (lastIndex < text.length) {
+                fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+            }
+
+            node.parentNode.replaceChild(fragment, node);
+        });
+
+        normalizeEmphasisSpacing();
+    }
+
+    function normalizeEmphasisSpacing() {
+        document.querySelectorAll('strong.term-emphasis').forEach(element => {
+            const previousNode = element.previousSibling;
+            const nextNode = element.nextSibling;
+            const previousElement = previousNode?.nodeType === Node.ELEMENT_NODE ? previousNode : null;
+            const nextElement = nextNode?.nodeType === Node.ELEMENT_NODE ? nextNode : null;
+            const textContent = element.textContent || '';
+
+            if (
+                previousNode &&
+                previousNode.nodeType === Node.TEXT_NODE &&
+                /[A-Za-z0-9%)]$/.test(previousNode.nodeValue || '') &&
+                /^[A-Za-z0-9]/.test(textContent)
+            ) {
+                previousNode.nodeValue = `${previousNode.nodeValue} `;
+            } else if (
+                previousElement &&
+                /[A-Za-z0-9%):]$/.test(previousElement.textContent || '') &&
+                /^[A-Za-z0-9]/.test(textContent)
+            ) {
+                element.parentNode?.insertBefore(document.createTextNode(' '), element);
+            }
+
+            if (
+                nextNode &&
+                nextNode.nodeType === Node.TEXT_NODE &&
+                /^[A-Za-z0-9]/.test(nextNode.nodeValue || '') &&
+                /[A-Za-z0-9%)]$/.test(textContent)
+            ) {
+                nextNode.nodeValue = ` ${nextNode.nodeValue}`;
+            } else if (
+                nextElement &&
+                /^[A-Za-z0-9]/.test(nextElement.textContent || '') &&
+                /[A-Za-z0-9%)]$/.test(textContent)
+            ) {
+                element.parentNode?.insertBefore(document.createTextNode(' '), nextElement);
+            }
+        });
+    }
+
+    function getEmphasisTermVariants(term) {
+        const trimmedTerm = term.trim();
+        const variants = new Set([trimmedTerm]);
+
+        if (trimmedTerm.endsWith('.')) {
+            variants.add(trimmedTerm.slice(0, -1));
+        }
+
+        if (trimmedTerm.endsWith(',')) {
+            variants.add(trimmedTerm.slice(0, -1));
+        }
+
+        if (trimmedTerm.includes('(') && !trimmedTerm.includes(')')) {
+            variants.add(`${trimmedTerm})`);
+        }
+
+        if (!EMPHASIS_TERMS_WITHOUT_NORMALIZATION.has(trimmedTerm)) {
+            const normalizedTerm = replaceKnownCopy(trimmedTerm);
+            if (normalizedTerm && normalizedTerm !== trimmedTerm) {
+                variants.add(normalizedTerm);
+            }
+        }
+
+        return Array.from(variants).filter(Boolean);
+    }
+
+    function escapeRegExp(value) {
+        return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
     function getFooterServicesMarkup() {
