@@ -343,6 +343,7 @@
 
                 const brandLogo = brand.querySelector('.brand-logo');
                 if (brandLogo) {
+                    brandLogo.setAttribute('src', 'assets/logo/nephspace.png');
                     brandLogo.setAttribute('alt', `${COMPANY_NAME} logo`);
                 }
 
