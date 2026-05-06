@@ -1330,8 +1330,9 @@ section {
 .hero-title {
     font-size: 72px;
     font-weight: 700;
+    color: #ffffff;
     margin-bottom: 15px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(0, 0, 0, 0.55);
 }
 
 .hero-subtitle {
@@ -1539,6 +1540,49 @@ section {
 /* ===== Services Section ===== */
 .services-section {
     padding: 100px 0;
+}
+
+.services-overview-row {
+    align-items: stretch;
+}
+
+.services-overview-row > [class*="col-"] {
+    display: flex;
+}
+
+.services-overview-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding-right: clamp(0rem, 1vw, 1rem);
+}
+
+.services-overview-content .about-copy-stack,
+.services-overview-content > p {
+    max-width: 100%;
+}
+
+.services-overview-content .about-bullet-list {
+    margin: 1.5rem 0;
+}
+
+.services-overview-content .btn {
+    align-self: flex-start;
+}
+
+.services-overview-media {
+    width: 100%;
+    min-height: 100%;
+}
+
+.services-overview-media img {
+    width: 100%;
+    height: 100%;
+    min-height: 460px;
+    object-fit: cover;
+    display: block;
 }
 
 .service-card {
@@ -1908,6 +1952,33 @@ section {
 
 .project-details--compact .btn {
     min-width: 140px;
+}
+
+.article-feed-card .project-info {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.article-feed-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin: 14px 0 18px;
+    color: var(--text-light);
+    font-size: 13px;
+}
+
+.article-feed-updated {
+    margin: 14px auto 0;
+    color: var(--text-light);
+    max-width: 820px;
+}
+
+.article-feed-card .btn {
+    margin-top: auto;
+    align-self: flex-start;
 }
 
 .project-back-link {
@@ -2847,6 +2918,14 @@ textarea.form-control {
         padding: 30px 20px;
     }
 
+    .services-overview-content {
+        padding-right: 0;
+    }
+
+    .services-overview-media img {
+        min-height: 380px;
+    }
+
     .filter-btn {
         padding: 8px 15px;
         font-size: 14px;
@@ -2854,6 +2933,14 @@ textarea.form-control {
 
     .about-content .lead {
         font-size: var(--font-size-base);
+    }
+
+    .services-overview-row {
+        gap: 2rem 0;
+    }
+
+    .services-overview-media img {
+        min-height: 300px;
     }
 
     .expertise-card h3 {

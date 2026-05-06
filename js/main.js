@@ -9,6 +9,99 @@
     const COMPANY_NAME = 'Nephspace Elite Construction';
     const COMPANY_NAME_LONG = 'Nephspace Elite Construction & Interiors Hub Limited';
     const COMPANY_NAME_ENCODED = 'Nephspace%20Elite%20Construction%20and%20Interiors%20Hub%20Ltd';
+    const ARTICLE_TOPICS = [
+        {
+            id: 'construction',
+            label: 'Construction Services',
+            query: 'construction services Kenya Africa building industry',
+            image: 'assets/img/images/services/Construction Services .jpg',
+            fallback: {
+                title: 'How construction delivery trends are shifting across Kenya and Africa',
+                summary: 'Track current reporting on execution quality, cost control, civil works, interiors, and building systems that affect active project delivery.',
+                link: 'services.html#construction-services',
+                source: 'Nephspace Insights',
+                publishedAt: null
+            }
+        },
+        {
+            id: 'pre-feed',
+            label: 'Pre-FEED',
+            query: 'pre-feed engineering feasibility project definition capital projects',
+            image: 'assets/img/images/services/Pre FEED.jpg',
+            fallback: {
+                title: 'Why early project definition matters before major capital commitment',
+                summary: 'Follow reporting on feasibility, basis of design, CAPEX baselines, and decision-ready project screening before deeper engineering starts.',
+                link: 'pre-feed.html',
+                source: 'Nephspace Insights',
+                publishedAt: null
+            }
+        },
+        {
+            id: 'feed',
+            label: 'FEED',
+            query: 'feed engineering front end engineering design project development',
+            image: 'assets/img/images/services/FEED.jpg',
+            fallback: {
+                title: 'What current FEED coverage reveals about risk, scope, and approvals',
+                summary: 'Stay current on engineering definition, scheduling, procurement strategy, approvals, and cost certainty before construction begins.',
+                link: 'feed.html',
+                source: 'Nephspace Insights',
+                publishedAt: null
+            }
+        },
+        {
+            id: 'pre-construction',
+            label: 'Pre-Construction',
+            query: 'pre construction planning early contractor engagement constructability',
+            image: 'assets/img/images/services/Pre-Construction & Early Contractor Engagement .jpg',
+            fallback: {
+                title: 'Fresh pre-construction reporting on constructability and schedule readiness',
+                summary: 'Monitor how early contractor involvement, value engineering, and sequencing decisions continue to shape successful delivery outcomes.',
+                link: 'pre-construction.html',
+                source: 'Nephspace Insights',
+                publishedAt: null
+            }
+        },
+        {
+            id: 'procurement',
+            label: 'Procurement Services',
+            query: 'construction procurement supply chain sourcing logistics Africa',
+            image: 'assets/img/images/services/Procurement Services .jpg',
+            fallback: {
+                title: 'Current procurement and supply-chain headlines affecting project delivery',
+                summary: 'See what is changing around global sourcing, customs, material lead times, and supplier coordination for active construction projects.',
+                link: 'procurement-services.html',
+                source: 'Nephspace Insights',
+                publishedAt: null
+            }
+        },
+        {
+            id: 'construction-management',
+            label: 'Construction Management',
+            query: 'construction management project controls bim vdc scheduling',
+            image: 'assets/img/images/services/Construction Management Services.jpg',
+            fallback: {
+                title: 'Latest construction management news on controls, BIM, and coordination',
+                summary: 'Keep up with project governance, digital coordination, quality leadership, and stakeholder management developments shaping delivery teams.',
+                link: 'construction-management.html',
+                source: 'Nephspace Insights',
+                publishedAt: null
+            }
+        },
+        {
+            id: 'facilities-maintenance',
+            label: 'Facilities Maintenance',
+            query: 'facilities maintenance building operations energy compliance HVAC',
+            image: 'assets/img/images/services/Facilities Maintenance .jpg',
+            fallback: {
+                title: 'Fresh facilities maintenance coverage on uptime, compliance, and lifecycle value',
+                summary: 'Review current reporting on preventive maintenance, HVAC optimization, emergency response, and operational asset performance.',
+                link: 'facilities-maintenance.html',
+                source: 'Nephspace Insights',
+                publishedAt: null
+            }
+        }
+    ];
     const EMPHASIS_TERMS = [
         'Meticulous Planning',
         'Accurate Cost Estimation',
@@ -257,6 +350,7 @@
     renderSharedFooter();
     normalizeDocumentCopy();
     emphasizeConfiguredTerms();
+    initializeArticlesFeed();
     window.addEventListener('load', () => {
         normalizeDocumentCopy();
         emphasizeConfiguredTerms();
@@ -1516,6 +1610,159 @@
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
+    }
+
+    async function initializeArticlesFeed() {
+        if (getCurrentPage() !== 'articles.html') {
+            return;
+        }
+
+        const feedGrid = document.getElementById('articlesFeedGrid');
+        const feedStatus = document.getElementById('articlesFeedStatus');
+        const feedUpdated = document.getElementById('articlesFeedUpdated');
+
+        if (!feedGrid || !feedStatus || !feedUpdated) {
+            return;
+        }
+
+        try {
+            const articles = await Promise.all(ARTICLE_TOPICS.map(loadArticleTopic));
+            renderArticleFeed(feedGrid, articles);
+
+            const liveCount = articles.filter(article => !article.isFallback).length;
+            feedStatus.textContent = liveCount === ARTICLE_TOPICS.length
+                ? 'Fresh headlines are being pulled across all service areas so readers can follow current construction and delivery developments, not static summaries.'
+                : 'Fresh headlines are shown where live feed access is available, with curated service-specific fallbacks keeping every service area covered.';
+            feedUpdated.textContent = `Coverage refreshed for ${ARTICLE_TOPICS.length} service areas.`;
+        } catch (error) {
+            const fallbackArticles = ARTICLE_TOPICS.map(topic => buildFallbackArticle(topic));
+            renderArticleFeed(feedGrid, fallbackArticles);
+            feedStatus.textContent = 'Live feeds are temporarily unavailable, so this page is showing curated service-specific fallback reads instead.';
+            feedUpdated.textContent = '';
+        }
+    }
+
+    async function loadArticleTopic(topic) {
+        try {
+            const liveArticle = await fetchLatestArticleForTopic(topic);
+            return {
+                ...liveArticle,
+                topicLabel: topic.label,
+                image: topic.image,
+                isFallback: false
+            };
+        } catch (error) {
+            return buildFallbackArticle(topic);
+        }
+    }
+
+    async function fetchLatestArticleForTopic(topic) {
+        const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(topic.query)}&hl=en-KE&gl=KE&ceid=KE:en`;
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
+        const response = await fetch(proxyUrl, {
+            headers: {
+                'Accept': 'application/rss+xml, application/xml, text/xml'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Unable to load live news for ${topic.label}.`);
+        }
+
+        const xmlText = await response.text();
+        const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+        const firstItem = xml.querySelector('item');
+
+        if (!firstItem) {
+            throw new Error(`No news items returned for ${topic.label}.`);
+        }
+
+        const rawTitle = firstItem.querySelector('title')?.textContent?.trim() || topic.fallback.title;
+        const sourceNode = firstItem.querySelector('source');
+        const source = sourceNode?.textContent?.trim() || extractSourceFromTitle(rawTitle) || 'Google News';
+
+        return {
+            title: stripSourceFromTitle(rawTitle),
+            summary: createArticleSummary(firstItem.querySelector('description')?.textContent || topic.fallback.summary),
+            link: firstItem.querySelector('link')?.textContent?.trim() || topic.fallback.link,
+            source,
+            publishedAt: firstItem.querySelector('pubDate')?.textContent?.trim() || null
+        };
+    }
+
+    function buildFallbackArticle(topic) {
+        return {
+            ...topic.fallback,
+            topicLabel: topic.label,
+            image: topic.image,
+            isFallback: true
+        };
+    }
+
+    function renderArticleFeed(container, articles) {
+        container.innerHTML = articles.map((article, index) => `
+            <div class="col-lg-4 col-md-6" data-aos="fade-up"${index % 3 !== 0 ? ` data-aos-delay="${(index % 3) * 100}"` : ''}>
+                <article class="project-card article-feed-card h-100">
+                    <div class="project-image">
+                        <img src="${escapeHtml(article.image)}" alt="${escapeHtml(article.topicLabel)} news illustration" class="img-fluid">
+                    </div>
+                    <div class="project-info">
+                        <span class="project-category">${escapeHtml(article.topicLabel)}</span>
+                        <h4>${escapeHtml(article.title)}</h4>
+                        <p>${escapeHtml(article.summary)}</p>
+                        <div class="article-feed-meta">
+                            <span><i class="fas fa-newspaper me-2"></i>${escapeHtml(article.source)}</span>
+                            <span><i class="fas fa-clock me-2"></i>${escapeHtml(formatArticleDate(article.publishedAt, article.isFallback))}</span>
+                        </div>
+                        <a href="${escapeHtml(article.link)}" class="btn btn-outline-primary"${article.link.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : ''}>Read More</a>
+                    </div>
+                </article>
+            </div>
+        `).join('');
+
+        if (typeof AOS !== 'undefined') {
+            AOS.refreshHard();
+        }
+    }
+
+    function createArticleSummary(description) {
+        const cleaned = description
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/&nbsp;/gi, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        if (!cleaned) {
+            return 'Current industry coverage is being tracked for this service area.';
+        }
+
+        return cleaned.length > 180 ? `${cleaned.slice(0, 177).trim()}...` : cleaned;
+    }
+
+    function stripSourceFromTitle(title) {
+        return title.replace(/\s+-\s+[^-]+$/, '').trim();
+    }
+
+    function extractSourceFromTitle(title) {
+        const parts = title.split(/\s+-\s+/);
+        return parts.length > 1 ? parts[parts.length - 1].trim() : '';
+    }
+
+    function formatArticleDate(value, isFallback = false) {
+        if (!value) {
+            return isFallback ? 'Curated fallback' : 'Recently published';
+        }
+
+        const parsed = new Date(value);
+        if (Number.isNaN(parsed.getTime())) {
+            return isFallback ? 'Curated fallback' : 'Recently published';
+        }
+
+        return parsed.toLocaleDateString('en-KE', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
     }
 
     // ===== Contact Form Handling =====
