@@ -282,6 +282,50 @@
         { label: 'Email us', iconClass: 'fas fa-envelope', href: 'mailto:nephspaceconstruction1@gmail.com', value: 'nephspaceconstruction1@gmail.com' }
     ];
 
+    function toPublicPath(path) {
+        if (!path) {
+            return path;
+        }
+
+        const trimmedPath = path.trim();
+        if (/^(?:[a-z]+:|\/\/|#)/i.test(trimmedPath)) {
+            return trimmedPath;
+        }
+
+        const [pathWithoutHash, hashFragment] = trimmedPath.split('#');
+        const [pathname, queryString] = pathWithoutHash.split('?');
+
+        let publicPath = pathname
+            .replace(/^\.\//, '')
+            .replace(/index\.html$/i, '')
+            .replace(/\.html$/i, '');
+
+        if (!publicPath) {
+            publicPath = '/';
+        }
+
+        const normalizedQuery = queryString ? `?${queryString}` : '';
+        const normalizedHash = typeof hashFragment === 'string' ? `#${hashFragment}` : '';
+
+        return `${publicPath}${normalizedQuery}${normalizedHash}`;
+    }
+
+    function normalizeInternalLinks(root = document) {
+        root.querySelectorAll('a[href]').forEach(link => {
+            const href = link.getAttribute('href');
+
+            if (!href || !/\.html(?:$|[?#])/i.test(href)) {
+                return;
+            }
+
+            if (/^(?:https?:|mailto:|tel:|javascript:)/i.test(href)) {
+                return;
+            }
+
+            link.setAttribute('href', toPublicPath(href));
+        });
+    }
+
     const serviceDropdownLinks = [
         { page: 'services.html', iconClass: 'fas fa-layer-group', href: 'services.html', label: 'All Services' },
         { page: 'pre-feed.html', iconClass: 'fas fa-lightbulb', href: 'pre-feed.html', label: 'Preliminary Front-End Engineering and Design (Pre-FEED)' },
@@ -350,10 +394,12 @@
     renderSharedFooter();
     normalizeDocumentCopy();
     emphasizeConfiguredTerms();
+    normalizeInternalLinks();
     initializeArticlesFeed();
     window.addEventListener('load', () => {
         normalizeDocumentCopy();
         emphasizeConfiguredTerms();
+        normalizeInternalLinks();
     });
 
     window.addEventListener('scroll', function() {
@@ -661,7 +707,13 @@
     }
 
     function getCurrentPage() {
-        return window.location.pathname.split('/').pop() || 'index.html';
+        const currentPath = window.location.pathname.split('/').pop() || '';
+
+        if (!currentPath) {
+            return 'index.html';
+        }
+
+        return currentPath.includes('.') ? currentPath : `${currentPath}.html`;
     }
 
     function getCurrentProjectFilter() {
@@ -856,7 +908,7 @@
 
     function getCanonicalUrl() {
         const currentPage = getCurrentPage();
-        const path = currentPage === 'index.html' ? '/' : `/${currentPage}`;
+        const path = currentPage === 'index.html' ? '/' : `/${currentPage.replace(/\.html$/i, '')}`;
 
         if (currentPage === 'project-detail.html') {
             const params = new URLSearchParams(window.location.search);
@@ -1714,11 +1766,13 @@
                             <span><i class="fas fa-newspaper me-2"></i>${escapeHtml(article.source)}</span>
                             <span><i class="fas fa-clock me-2"></i>${escapeHtml(formatArticleDate(article.publishedAt, article.isFallback))}</span>
                         </div>
-                        <a href="${escapeHtml(article.link)}" class="btn btn-outline-primary"${article.link.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : ''}>Read More</a>
+                        <a href="${escapeHtml(article.link.startsWith('http') ? article.link : toPublicPath(article.link))}" class="btn btn-outline-primary"${article.link.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : ''}>Read More</a>
                     </div>
                 </article>
             </div>
         `).join('');
+
+        normalizeInternalLinks(container);
 
         if (typeof AOS !== 'undefined') {
             AOS.refreshHard();
