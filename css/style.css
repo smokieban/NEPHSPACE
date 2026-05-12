@@ -1981,6 +1981,207 @@ section {
     align-self: flex-start;
 }
 
+.article-listing-section .section-description {
+    max-width: 760px;
+}
+
+.article-listing-grid {
+    align-items: stretch;
+}
+
+.article-list-card {
+    overflow: hidden;
+}
+
+.article-list-image {
+    min-height: 220px;
+}
+
+.article-list-image img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.article-list-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+}
+
+.article-list-content h3 {
+    font-size: 28px;
+    margin: 0;
+}
+
+.article-list-content p {
+    margin-bottom: 8px;
+}
+
+.article-list-content .btn {
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.article-sidebar-stack {
+    display: grid;
+    gap: 24px;
+    position: sticky;
+    top: 120px;
+}
+
+.article-sidebar-widget {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+}
+
+.article-sidebar-widget h3 {
+    font-size: 24px;
+    margin-bottom: 18px;
+}
+
+.article-topic-links,
+.article-recent-links {
+    display: grid;
+    gap: 12px;
+}
+
+.article-topic-link,
+.article-recent-link {
+    display: block;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(11, 41, 72, 0.08);
+    background: #f8fafc;
+    color: var(--dark-color);
+    transition: var(--transition);
+}
+
+.article-topic-link:hover,
+.article-recent-link:hover,
+.article-topic-link.active {
+    background: rgba(212, 165, 116, 0.12);
+    border-color: rgba(212, 165, 116, 0.4);
+    color: var(--dark-color);
+}
+
+.article-recent-link-title {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.article-recent-link-date {
+    display: block;
+    color: var(--text-light);
+    font-size: 13px;
+}
+
+.article-sidebar-cta {
+    background: linear-gradient(135deg, rgba(11, 41, 72, 0.98), rgba(22, 58, 96, 0.96));
+    color: var(--white);
+}
+
+.article-sidebar-cta h3,
+.article-sidebar-cta p {
+    color: var(--white);
+}
+
+.article-detail-image {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 18px;
+    margin-bottom: 28px;
+}
+
+.article-detail-header {
+    margin-bottom: 28px;
+}
+
+.article-rich-body {
+    display: grid;
+    gap: 18px;
+}
+
+.article-rich-body h3 {
+    font-size: 28px;
+    margin: 14px 0 0;
+}
+
+.article-rich-body p {
+    margin: 0;
+    color: var(--text-light);
+    line-height: 1.9;
+}
+
+.article-detail-accordion {
+    display: grid;
+    gap: 16px;
+}
+
+.article-accordion-item {
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 18px !important;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.article-detail-accordion .accordion-button {
+    background: var(--white);
+    color: var(--dark-color);
+    font-size: 20px;
+    font-weight: 600;
+    padding: 22px 24px;
+    box-shadow: none;
+}
+
+.article-detail-accordion .accordion-button:not(.collapsed) {
+    background: linear-gradient(135deg, rgba(212, 165, 116, 0.14), rgba(212, 165, 116, 0.04));
+    color: var(--dark-color);
+}
+
+.article-detail-accordion .accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(212, 165, 116, 0.25);
+}
+
+.article-accordion-body {
+    display: grid;
+    gap: 18px;
+    padding: 8px 24px 24px;
+}
+
+.article-accordion-body p,
+.article-accordion-body ul,
+.article-accordion-body ol {
+    margin: 0;
+    color: var(--text-light);
+    line-height: 1.9;
+}
+
+.article-section-intro {
+    color: var(--dark-color) !important;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+.article-accordion-body ul,
+.article-accordion-body ol {
+    padding-left: 1.2rem;
+}
+
+.article-detail-footer {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
 .project-back-link {
     display: inline-flex;
     align-items: center;
@@ -2237,6 +2438,87 @@ section {
 }
 
 #testimonialFormMessage.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: block;
+}
+
+.admin-dashboard-section {
+    position: relative;
+}
+
+.admin-panel-card {
+    border-radius: 20px;
+}
+
+.admin-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+}
+
+.admin-content-textarea {
+    min-height: 260px;
+}
+
+.admin-list-stack {
+    display: grid;
+    gap: 18px;
+}
+
+.admin-list-card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 22px;
+    border-radius: 18px;
+    background: #f8fafc;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.admin-list-card-body {
+    flex: 1 1 280px;
+}
+
+.admin-list-card-body h4 {
+    margin: 12px 0 10px;
+    font-size: 20px;
+}
+
+.admin-list-card-body p {
+    margin-bottom: 10px;
+    color: var(--text-light);
+}
+
+.admin-list-card-role {
+    font-weight: 600;
+    color: var(--dark-color) !important;
+}
+
+.admin-list-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#adminArticleMessage {
+    padding: 15px;
+    border-radius: 10px;
+    display: none;
+}
+
+#adminArticleMessage.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    display: block;
+}
+
+#adminArticleMessage.error {
     background: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
@@ -3838,6 +4120,18 @@ textarea.modern-form-control {
 
 /* ===== Responsive Breakpoints ===== */
 @media (max-width: 991px) {
+    .article-sidebar-stack {
+        position: static;
+    }
+
+    .article-list-image {
+        min-height: 220px;
+    }
+
+    .article-detail-image {
+        height: 320px;
+    }
+
     .page-header {
         padding: 120px 0 60px;
     }
@@ -3848,6 +4142,16 @@ textarea.modern-form-control {
 }
 
 @media (max-width: 767px) {
+    .article-list-content h3,
+    .article-sidebar-widget h3,
+    .article-rich-body h3 {
+        font-size: 22px;
+    }
+
+    .article-detail-image {
+        height: 240px;
+    }
+
     .page-header {
         padding: 100px 0 50px;
     }

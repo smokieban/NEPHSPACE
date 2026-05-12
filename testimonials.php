@@ -23,6 +23,23 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 try {
     $action = isset($_POST['action']) ? trim((string) $_POST['action']) : 'submit';
+
+    if ($action === 'delete') {
+        $id = isset($_POST['id']) ? trim((string) $_POST['id']) : '';
+        if ($id === '') {
+            throw new RuntimeException('Testimonial id is required.');
+        }
+
+        if (!deleteTestimonialById($id)) {
+            throw new RuntimeException('Testimonial could not be found.');
+        }
+
+        sendTestimonialsJsonResponse(array(
+            'success' => true,
+            'message' => 'Testimonial deleted successfully.'
+        ));
+    }
+
     if ($action !== 'submit') {
         throw new RuntimeException('Unsupported testimonial action.');
     }
@@ -88,7 +105,7 @@ try {
     ), $statusCode);
 }
 
-function sendTestimonialsJsonResponse($response, $statusCode = 200) {
+function sendTestimonialsJsonResponse(array $response, int $statusCode = 200): void {
     if (ob_get_length()) {
         ob_clean();
     }

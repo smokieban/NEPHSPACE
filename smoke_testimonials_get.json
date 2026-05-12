@@ -1,0 +1,7 @@
+
+Fatal error: Uncaught Error: Undefined constant "REQUEST_METHOD" in Command line code:1
+Stack trace:
+#0 {main}
+  thrown in Command line code on line 1
+
+EXIT:255
