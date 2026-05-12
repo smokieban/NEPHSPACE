@@ -60,6 +60,7 @@
         event.preventDefault();
         const formData = new FormData(articleForm);
         formData.set('action', 'save');
+        formData.set('rawBody', fields.body.value || '');
 
         const submitButton = articleForm.querySelector('button[type="submit"]');
         const originalHtml = submitButton.innerHTML;
@@ -146,7 +147,7 @@
         fields.readTime.value = article.readTime || '';
         fields.image.value = article.image || '';
         fields.excerpt.value = article.excerpt || '';
-        fields.body.value = article.body || '';
+        fields.body.value = getEditableArticleBody(article);
         showMessage(articleMessage, `Editing “${article.title}”. Save to update it.`, 'success');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -211,6 +212,53 @@
     function formatDate(value) {
         const parsed = new Date(value);
         return Number.isNaN(parsed.getTime()) ? (value || 'Undated') : parsed.toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    function getEditableArticleBody(article) {
+        const rawBody = normalizeEditorText(article.rawBody || '');
+        if (rawBody !== '') {
+            return rawBody;
+        }
+
+        return htmlToEditorBody(article.body || '');
+    }
+
+    function htmlToEditorBody(html) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = html || '';
+        const blocks = [];
+
+        Array.from(wrapper.children).forEach(element => {
+            const tag = element.tagName.toUpperCase();
+            if (tag === 'H3') {
+                blocks.push(element.textContent.trim());
+                return;
+            }
+
+            if (tag === 'P') {
+                blocks.push(element.textContent.trim());
+                return;
+            }
+
+            if (tag === 'UL' || tag === 'OL') {
+                const items = Array.from(element.querySelectorAll('li'))
+                    .map(item => `• ${item.textContent.trim()}`)
+                    .filter(Boolean)
+                    .join('\n');
+                if (items) {
+                    blocks.push(items);
+                }
+            }
+        });
+
+        return normalizeEditorText(blocks.join('\n\n'));
+    }
+
+    function normalizeEditorText(value) {
+        return String(value || '')
+            .replace(/\r\n?/g, '\n')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     function escapeHtml(value) {

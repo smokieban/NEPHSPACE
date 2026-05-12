@@ -238,6 +238,7 @@ function getPublicArticles(): array {
             'image' => (string) ($article['image'] ?? ''),
             'excerpt' => (string) ($article['excerpt'] ?? ''),
             'body' => (string) ($article['body'] ?? ''),
+            'rawBody' => (string) ($article['rawBody'] ?? ''),
             'created_at' => (string) ($article['created_at'] ?? ''),
             'updated_at' => (string) ($article['updated_at'] ?? ''),
         );
@@ -253,12 +254,13 @@ function upsertArticle(array $input): array {
     $readTime = trim((string) ($input['readTime'] ?? ''));
     $image = trim((string) ($input['image'] ?? ''));
     $excerpt = trim((string) ($input['excerpt'] ?? ''));
-    $body = normalizeArticleBody((string) ($input['body'] ?? ''));
+    $rawBody = normalizeArticleSourceBody((string) ($input['rawBody'] ?? $input['body'] ?? ''), $title);
+    $body = normalizeArticleBody($rawBody, $title);
     $requestedSlug = trim((string) ($input['slug'] ?? ''));
     $originalSlug = trim((string) ($input['original_slug'] ?? ''));
 
-    if ($title === '' || $category === '' || $date === '' || $excerpt === '' || $body === '') {
-        throw new RuntimeException('Title, category, date, excerpt, and article content are required.');
+    if ($title === '' || $category === '' || $date === '' || $body === '') {
+        throw new RuntimeException('Title, category, date, and article content are required.');
     }
 
     $slug = makeUniqueArticleSlug($requestedSlug !== '' ? $requestedSlug : $title, $articles, $originalSlug);
@@ -269,10 +271,11 @@ function upsertArticle(array $input): array {
         'category' => $category,
         'title' => $title,
         'date' => $date,
-        'readTime' => $readTime !== '' ? $readTime : '5 min read',
+        'readTime' => $readTime !== '' ? $readTime : estimateArticleReadTime($body),
         'image' => $image !== '' ? $image : 'assets/img/images/articles/Pre-feed.jpg',
-        'excerpt' => $excerpt,
+        'excerpt' => $excerpt !== '' ? $excerpt : generateArticleExcerpt($body),
         'body' => $body,
+        'rawBody' => $rawBody,
         'updated_at' => $timestamp,
     );
 
@@ -344,8 +347,33 @@ function slugify(string $value): string {
     return $value !== '' ? $value : 'article';
 }
 
-function normalizeArticleBody(string $body): string {
+function normalizeArticleSourceBody(string $body, string $articleTitle = ''): string {
     $body = trim($body);
+    if ($body === '') {
+        return '';
+    }
+
+    $body = preg_replace("/\r\n?|\n/", "\n", $body);
+    $lines = preg_split('/\n/', (string) $body);
+    $normalizedLines = array();
+    $titleSlug = slugify($articleTitle);
+    $titleRemoved = false;
+
+    foreach ($lines as $line) {
+        $cleanLine = rtrim((string) $line);
+        if (!$titleRemoved && trim($cleanLine) !== '' && $titleSlug !== '' && slugify(trim($cleanLine)) === $titleSlug) {
+            $titleRemoved = true;
+            continue;
+        }
+
+        $normalizedLines[] = $cleanLine;
+    }
+
+    return trim(implode("\n", $normalizedLines));
+}
+
+function normalizeArticleBody(string $body, string $articleTitle = ''): string {
+    $body = normalizeArticleSourceBody($body, $articleTitle);
     if ($body === '') {
         return '';
     }
@@ -358,24 +386,45 @@ function normalizeArticleBody(string $body): string {
     $html = array();
     $paragraph = array();
     $listItems = array();
+    $listTag = 'ul';
 
     $flushParagraph = function () use (&$paragraph, &$html) {
-        if (!empty($paragraph)) {
-            $html[] = '<p>' . htmlspecialchars(trim(implode(' ', $paragraph)), ENT_QUOTES, 'UTF-8') . '</p>';
+        if (empty($paragraph)) {
+            return;
+        }
+
+        $text = trim(implode(' ', $paragraph));
+        if ($text === '') {
             $paragraph = array();
+            return;
         }
+
+        if (preg_match('/^Contact\s*:\s*(.+)$/i', $text, $matches)) {
+            $html[] = '<p><strong>Contact:</strong> ' . renderArticleInlineText(trim($matches[1])) . '</p>';
+        } else {
+            $html[] = '<p>' . renderArticleInlineText($text) . '</p>';
+        }
+
+        $paragraph = array();
     };
 
-    $flushList = function () use (&$listItems, &$html) {
-        if (!empty($listItems)) {
-            $html[] = '<ul>' . implode('', array_map(function ($item) {
-                return '<li>' . htmlspecialchars($item, ENT_QUOTES, 'UTF-8') . '</li>';
-            }, $listItems)) . '</ul>';
-            $listItems = array();
+    $flushList = function () use (&$listItems, &$html, &$listTag) {
+        if (empty($listItems)) {
+            return;
         }
+
+        $items = array_map(function ($item) {
+            return '<li>' . renderArticleInlineText($item) . '</li>';
+        }, $listItems);
+
+        $html[] = '<' . $listTag . '>' . implode('', $items) . '</' . $listTag . '>';
+        $listItems = array();
+        $listTag = 'ul';
     };
 
-    foreach ($lines as $rawLine) {
+    $totalLines = count($lines);
+    for ($index = 0; $index < $totalLines; $index++) {
+        $rawLine = $lines[$index];
         $line = trim((string) $rawLine);
         if ($line === '') {
             $flushParagraph();
@@ -386,13 +435,28 @@ function normalizeArticleBody(string $body): string {
         if (preg_match('/^(?:##\s+)(.+)$/', $line, $matches)) {
             $flushParagraph();
             $flushList();
-            $html[] = '<h3>' . htmlspecialchars(trim($matches[1]), ENT_QUOTES, 'UTF-8') . '</h3>';
+            $html[] = '<h3>' . escapeArticleHeading(trim($matches[1])) . '</h3>';
             continue;
         }
 
-        if (preg_match('/^(?:-|•)\s*(.+)$/u', $line, $matches)) {
+        if (isLikelyArticleHeading($line)) {
             $flushParagraph();
+            $flushList();
+            $html[] = '<h3>' . escapeArticleHeading($line) . '</h3>';
+            continue;
+        }
+
+        if (preg_match('/^(?:[-*•])\s*(.+)$/u', $line, $matches)) {
+            $flushParagraph();
+            $listTag = 'ul';
             $listItems[] = trim($matches[1]);
+            continue;
+        }
+
+        if (preg_match('/^([0-9]+)[\.)]\s+(.+)$/', $line, $matches) && !isLikelyArticleHeading($line)) {
+            $flushParagraph();
+            $listTag = 'ol';
+            $listItems[] = trim($matches[2]);
             continue;
         }
 
@@ -403,4 +467,100 @@ function normalizeArticleBody(string $body): string {
     $flushParagraph();
     $flushList();
     return implode('', $html);
+}
+
+function isLikelyArticleHeading(string $line): bool {
+    $line = trim($line);
+    if ($line === '') {
+        return false;
+    }
+
+    if (preg_match('/^(?:[-*•])\s+/', $line)) {
+        return false;
+    }
+
+    if (preg_match('/[:;,.!]$/u', $line)) {
+        return false;
+    }
+
+    if (mb_strlen($line) > 140) {
+        return false;
+    }
+
+    if (preg_match('/^[0-9]+[\.)]\s+.+$/', $line)) {
+        return true;
+    }
+
+    if (preg_match('/^(Introduction|Overview|Conclusion|Summary|Recommendations|Next Steps)$/i', $line)) {
+        return true;
+    }
+
+    $words = preg_split('/\s+/', $line);
+    $validWords = 0;
+    $titleLikeWords = 0;
+
+    foreach ($words as $word) {
+        $cleanWord = trim((string) $word, " \t\n\r\0\x0B\"'“”‘’,;()[]{}");
+        if ($cleanWord === '') {
+            continue;
+        }
+
+        $validWords++;
+        if (preg_match('/^(and|or|of|the|in|on|for|to|a|an|with|by|at|is|as|from|what|why)$/i', $cleanWord)) {
+            $titleLikeWords++;
+            continue;
+        }
+
+        if (preg_match('/^[A-Z0-9]/', $cleanWord)) {
+            $titleLikeWords++;
+        }
+    }
+
+    if ($validWords === 0 || $validWords > 18) {
+        return false;
+    }
+
+    return ($titleLikeWords / $validWords) >= 0.6;
+}
+
+function renderArticleInlineText(string $text): string {
+    $text = htmlspecialchars(trim($text), ENT_QUOTES, 'UTF-8');
+    $text = preg_replace('/\*\*(.+?)\*\*/u', '<strong>$1</strong>', $text);
+    $text = preg_replace('/__(.+?)__/u', '<strong>$1</strong>', $text);
+    $text = preg_replace('/(^|\s)\*(?!\s)([^*]+?)\*(?=\s|$)/u', '$1<em>$2</em>', $text);
+    $text = preg_replace(
+        '/([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})/iu',
+        '<a href="mailto:$1">$1</a>',
+        $text
+    );
+    $text = preg_replace(
+        '/((?:https?:\/\/|www\.)[^\s<]+)/iu',
+        '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>',
+        $text
+    );
+    return $text;
+}
+
+function escapeArticleHeading(string $text): string {
+    return htmlspecialchars(trim($text), ENT_QUOTES, 'UTF-8');
+}
+
+function generateArticleExcerpt(string $bodyHtml): string {
+    $text = trim(preg_replace('/\s+/', ' ', strip_tags($bodyHtml)));
+    if ($text === '') {
+        return '';
+    }
+
+    if (mb_strlen($text) <= 220) {
+        return $text;
+    }
+
+    return rtrim(mb_substr($text, 0, 217)) . '...';
+}
+
+function estimateArticleReadTime(string $bodyHtml): string {
+    $text = trim(preg_replace('/\s+/', ' ', strip_tags($bodyHtml)));
+    $wordCount = str_word_count($text);
+    $minutes = max(1, (int) ceil($wordCount / 220));
+    return $minutes . ' min read';
 }
