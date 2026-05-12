@@ -52,11 +52,11 @@ $csrfToken = ensureTestimonialsCsrfToken();
 $isAuthenticated = isTestimonialsAdminAuthenticated();
 $testimonials = readTestimonials();
 
-function testimonialsAdminEscape($value) {
+function testimonialsAdminEscape(mixed $value): string {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
-function testimonialsAdminDate($value) {
+function testimonialsAdminDate(mixed $value): string {
     $timestamp = strtotime((string) $value);
     return $timestamp ? date('M j, Y g:i A', $timestamp) : 'Unknown date';
 }
