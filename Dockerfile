@@ -1,16 +1,23 @@
-# Use official Nginx image
-FROM nginx:alpine
+# Use official PHP image with Apache so .php endpoints are executed
+FROM php:8.2-apache
 
-# Remove default Nginx website and config
-RUN rm -rf /usr/share/nginx/html/* && rm /etc/nginx/conf.d/default.conf
+# Install required PHP extensions used by the site
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libonig-dev \
+    && docker-php-ext-install mbstring \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy your custom Nginx configuration
-COPY default.conf /etc/nginx/conf.d/default.conf
+# Copy Apache site configuration with extensionless route support
+COPY docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 
-# Copy your website files
-COPY . /usr/share/nginx/html
+# Copy website files
+COPY . /var/www/html
+
+# Fix basic ownership for Apache runtime
+RUN chown -R www-data:www-data /var/www/html
 
 # Expose port 80
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["apache2-foreground"]
