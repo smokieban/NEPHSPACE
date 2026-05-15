@@ -3,6 +3,7 @@
 require_once __DIR__ . '/admin.lib.php';
 
 $config = loadAdminConfig();
+cleanupExpiredAdminSecurityState();
 header('X-Robots-Tag: noindex, nofollow', true);
 
 $token = trim((string) ($_REQUEST['token'] ?? ''));

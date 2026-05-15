@@ -4,6 +4,7 @@ require_once __DIR__ . '/admin.lib.php';
 
 $config = loadAdminConfig();
 startAdminSession($config['session_name']);
+cleanupExpiredAdminSecurityState();
 
 header('X-Robots-Tag: noindex, nofollow', true);
 
@@ -30,8 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errorMessage = 'Your session has expired. Please refresh the page and try again.';
     } elseif ($action === 'request_account') {
         try {
-            createAdminAccountRequest((string) ($_POST['name'] ?? ''), (string) ($_POST['email'] ?? ''), (string) ($_POST['password'] ?? ''), (string) ($_POST['password_confirmation'] ?? ''), $config);
-            header('Location: admin.php?request_sent=1');
+            $request = createAdminAccountRequest((string) ($_POST['name'] ?? ''), (string) ($_POST['email'] ?? ''), (string) ($_POST['password'] ?? ''), (string) ($_POST['password_confirmation'] ?? ''), $config);
+            header('Location: ' . (!empty($request['status_url']) ? (string) $request['status_url'] : 'admin.php?request_sent=1'));
             exit;
         } catch (RuntimeException $exception) {
             $errorMessage = $exception->getMessage();

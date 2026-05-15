@@ -144,6 +144,73 @@ function saveAdminPasswordResetTokens(array $tokens): void {
     saveAdminStorageItems(getAdminPasswordResetTokensFilePath(), 'tokens', $tokens);
 }
 
+function cleanupExpiredAdminSecurityState(): void {
+    expirePendingAdminAccountRequests();
+    expirePendingAdminPasswordResetRequests();
+    purgeExpiredAdminPasswordResetTokens();
+}
+
+function expirePendingAdminAccountRequests(): void {
+    $requests = readAdminAccountRequests();
+    $changed = false;
+
+    foreach ($requests as $index => $request) {
+        if ((string) ($request['status'] ?? '') !== 'pending') {
+            continue;
+        }
+
+        if (!isAdminIsoTimeExpired((string) ($request['expires_at'] ?? ''))) {
+            continue;
+        }
+
+        $request['status'] = 'expired';
+        $request['handled_at'] = getAdminNow();
+        $request['handled_by'] = 'system_cleanup';
+        $requests[$index] = $request;
+        $changed = true;
+    }
+
+    if ($changed) {
+        saveAdminAccountRequests($requests);
+    }
+}
+
+function expirePendingAdminPasswordResetRequests(): void {
+    $requests = readAdminPasswordResetRequests();
+    $changed = false;
+
+    foreach ($requests as $index => $request) {
+        if ((string) ($request['status'] ?? '') !== 'pending') {
+            continue;
+        }
+
+        if (!isAdminIsoTimeExpired((string) ($request['expires_at'] ?? ''))) {
+            continue;
+        }
+
+        $request['status'] = 'expired';
+        $request['handled_at'] = getAdminNow();
+        $request['handled_by'] = 'system_cleanup';
+        $requests[$index] = $request;
+        $changed = true;
+    }
+
+    if ($changed) {
+        saveAdminPasswordResetRequests($requests);
+    }
+}
+
+function purgeExpiredAdminPasswordResetTokens(): void {
+    $tokens = readAdminPasswordResetTokens();
+    $activeTokens = array_values(array_filter($tokens, function ($token) {
+        return empty($token['used_at']) && !isAdminIsoTimeExpired((string) ($token['expires_at'] ?? ''));
+    }));
+
+    if (count($activeTokens) !== count($tokens)) {
+        saveAdminPasswordResetTokens($activeTokens);
+    }
+}
+
 function adminAccountsExist(): bool {
     return !empty(readAdminAccounts());
 }
@@ -225,6 +292,32 @@ function buildAdminUrl(array $config, string $path, array $query = array()): str
     return $target;
 }
 
+function buildAdminAccountRequestStatusUrl(array $request, string $rawToken, array $config): string {
+    return buildAdminUrl($config, 'admin-request-status.php', array(
+        'request' => (string) ($request['id'] ?? ''),
+        'token' => $rawToken,
+    ));
+}
+
+function findAdminAccountRequestByStatusAccess(string $requestId, string $rawToken): ?array {
+    $tokenHash = hashAdminToken($rawToken);
+
+    foreach (readAdminAccountRequests() as $request) {
+        if ((string) ($request['id'] ?? '') !== $requestId) {
+            continue;
+        }
+
+        $storedHash = (string) ($request['status_token_hash'] ?? '');
+        if ($storedHash === '' || !hash_equals($storedHash, $tokenHash)) {
+            return null;
+        }
+
+        return $request;
+    }
+
+    return null;
+}
+
 function findAdminAccountByEmail(string $email): ?array {
     $normalizedEmail = normalizeAdminEmail($email);
     if ($normalizedEmail === '') {
@@ -262,6 +355,8 @@ function authenticateAdminAccount(string $email, string $password): ?array {
 }
 
 function createAdminAccountRequest(string $name, string $email, string $password, string $passwordConfirmation, array $config): array {
+    cleanupExpiredAdminSecurityState();
+
     if (getAdminAuthMode($config) !== 'bootstrap') {
         throw new RuntimeException('An admin account already exists. Please sign in instead.');
     }
@@ -298,6 +393,7 @@ function createAdminAccountRequest(string $name, string $email, string $password
     }
 
     $approvalToken = generateAdminToken();
+    $statusToken = generateAdminToken();
     $request = array(
         'id' => bin2hex(random_bytes(8)),
         'name' => $name,
@@ -305,6 +401,7 @@ function createAdminAccountRequest(string $name, string $email, string $password
         'password_hash' => password_hash($password, PASSWORD_DEFAULT),
         'status' => 'pending',
         'approval_token_hash' => hashAdminToken($approvalToken),
+        'status_token_hash' => hashAdminToken($statusToken),
         'created_at' => getAdminNow(),
         'expires_at' => gmdate('c', time() + 60 * 60 * 48),
         'handled_at' => '',
@@ -315,10 +412,13 @@ function createAdminAccountRequest(string $name, string $email, string $password
     saveAdminAccountRequests($requests);
     recordAdminSecurityEvent('admin_account_request_submitted', array('email' => $email, 'name' => $name), $config, false);
     sendAdminAccountRequestApprovalEmail($request, $approvalToken, $config);
+    $request['status_url'] = buildAdminAccountRequestStatusUrl($request, $statusToken, $config);
     return $request;
 }
 
 function processAdminAccountRequestDecision(string $requestId, string $token, string $decision, array $config): array {
+    cleanupExpiredAdminSecurityState();
+
     $requests = readAdminAccountRequests();
     $updatedRequest = null;
 
@@ -361,10 +461,13 @@ function processAdminAccountRequestDecision(string $requestId, string $token, st
 
     saveAdminAccountRequests($requests);
     recordAdminSecurityEvent($decision === 'approve' ? 'admin_account_request_approved' : 'admin_account_request_rejected', array('email' => (string) ($updatedRequest['email'] ?? ''), 'request_id' => $requestId), $config, false);
+    sendAdminAccountRequestDecisionEmail($updatedRequest, $decision, $config);
     return $updatedRequest;
 }
 
 function createAdminPasswordResetRequest(string $email, array $config): bool {
+    cleanupExpiredAdminSecurityState();
+
     if (getAdminAuthMode($config) !== 'accounts') {
         return false;
     }
@@ -401,6 +504,8 @@ function createAdminPasswordResetRequest(string $email, array $config): bool {
 }
 
 function processAdminPasswordResetRequestDecision(string $requestId, string $token, string $decision, array $config): array {
+    cleanupExpiredAdminSecurityState();
+
     $requests = readAdminPasswordResetRequests();
     $updatedRequest = null;
 
@@ -424,6 +529,7 @@ function processAdminPasswordResetRequestDecision(string $requestId, string $tok
             sendApprovedAdminPasswordResetEmail($account, $resetLink, $config);
         } else {
             $request['status'] = 'rejected';
+            sendRejectedAdminPasswordResetEmail($request, $config);
         }
 
         $requests[$index] = $request;
@@ -639,6 +745,16 @@ function sendAdminAccountRequestApprovalEmail(array $request, string $rawToken, 
     deliverAdminAlertEmail($config, 'Admin access request requires approval', buildAdminAccountRequestApprovalBody($request, $reviewUrl), (string) $config['account_request_approver_email'], (string) $config['account_request_approver_name']);
 }
 
+function sendAdminAccountRequestDecisionEmail(array $request, string $decision, array $config): void {
+    deliverAdminAlertEmail(
+        $config,
+        $decision === 'approve' ? 'Your admin access request was approved' : 'Your admin access request was rejected',
+        buildAdminAccountRequestDecisionBody($request, $decision, $config),
+        (string) ($request['email'] ?? ''),
+        (string) ($request['name'] ?? 'Admin Requester')
+    );
+}
+
 function sendAdminPasswordResetApprovalEmail(array $request, string $rawToken, array $config): void {
     $reviewUrl = buildAdminUrl($config, 'admin-approval.php', array('type' => 'password_reset', 'request' => (string) ($request['id'] ?? ''), 'token' => $rawToken));
     deliverAdminAlertEmail($config, 'Admin password reset request requires approval', buildAdminPasswordResetApprovalBody($request, $reviewUrl), (string) $config['password_reset_approver_email'], (string) $config['password_reset_approver_name']);
@@ -646,6 +762,16 @@ function sendAdminPasswordResetApprovalEmail(array $request, string $rawToken, a
 
 function sendApprovedAdminPasswordResetEmail(array $account, string $resetLink, array $config): void {
     deliverAdminAlertEmail($config, 'Your admin password reset was approved', buildApprovedAdminPasswordResetBody($account, $resetLink), (string) ($account['email'] ?? ''), (string) ($account['name'] ?? 'Admin User'));
+}
+
+function sendRejectedAdminPasswordResetEmail(array $request, array $config): void {
+    deliverAdminAlertEmail(
+        $config,
+        'Your admin password reset request was rejected',
+        buildRejectedAdminPasswordResetBody($request),
+        (string) ($request['email'] ?? ''),
+        'Admin User'
+    );
 }
 
 function deliverAdminAlertEmail(array $config, string $subject, string $body, string $recipientEmail, string $recipientName): void {
@@ -725,12 +851,45 @@ function buildAdminAccountRequestApprovalBody(array $request, string $reviewUrl)
     return implode(PHP_EOL, array('A new admin access request is pending approval.', '', 'Name: ' . (string) ($request['name'] ?? ''), 'Email: ' . (string) ($request['email'] ?? ''), 'Requested At: ' . (string) ($request['created_at'] ?? ''), 'Expires At: ' . (string) ($request['expires_at'] ?? ''), 'IP Address: ' . resolveAdminClientIp(), '', 'Review and approve/reject this request here:', $reviewUrl));
 }
 
+function buildAdminAccountRequestDecisionBody(array $request, string $decision, array $config): string {
+    $baseLines = array(
+        'Hello ' . (string) ($request['name'] ?? 'Requester') . ',',
+        '',
+        'Email: ' . (string) ($request['email'] ?? ''),
+        'Request Submitted: ' . (string) ($request['created_at'] ?? ''),
+    );
+
+    if ($decision === 'approve') {
+        $baseLines[] = '';
+        $baseLines[] = 'Your admin access request has been approved.';
+        $baseLines[] = 'You can now sign in using your email and password at:';
+        $baseLines[] = buildAdminUrl($config, 'admin.php');
+    } else {
+        $baseLines[] = '';
+        $baseLines[] = 'Your admin access request has been rejected.';
+        $baseLines[] = 'If you believe this was in error, please contact the website owner.';
+    }
+
+    return implode(PHP_EOL, $baseLines);
+}
+
 function buildAdminPasswordResetApprovalBody(array $request, string $reviewUrl): string {
     return implode(PHP_EOL, array('An admin password reset request is pending approval.', '', 'Email: ' . (string) ($request['email'] ?? ''), 'Requested At: ' . (string) ($request['created_at'] ?? ''), 'Expires At: ' . (string) ($request['expires_at'] ?? ''), 'IP Address: ' . resolveAdminClientIp(), '', 'Review and approve/reject this request here:', $reviewUrl));
 }
 
 function buildApprovedAdminPasswordResetBody(array $account, string $resetLink): string {
     return implode(PHP_EOL, array('Your admin password reset request has been approved.', '', 'Hello ' . (string) ($account['name'] ?? 'Admin User') . ',', 'Use the secure link below to set a new password. This link expires in 1 hour.', '', $resetLink, '', 'If you did not request this reset, please contact the site administrator immediately.'));
+}
+
+function buildRejectedAdminPasswordResetBody(array $request): string {
+    return implode(PHP_EOL, array(
+        'Your admin password reset request has been rejected.',
+        '',
+        'Email: ' . (string) ($request['email'] ?? ''),
+        'Requested At: ' . (string) ($request['created_at'] ?? ''),
+        '',
+        'If you still need access, please contact the website owner directly.',
+    ));
 }
 
 function adminEscape(mixed $value): string {
