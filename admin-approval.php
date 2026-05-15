@@ -73,7 +73,7 @@ if ($type !== '' && $requestId !== '' && $token !== '') {
                     <div class="project-detail-panel admin-panel-card">
                         <span class="section-subtitle">Protected Approval Review</span>
                         <h1 class="section-title mb-3"><?php echo adminEscape($title); ?></h1>
-                        <div class="alert <?php echo adminEscape($messageClass); ?> mb-4"><?php echo adminEscape($message); ?></div>
+                        <div class="alert <?php echo adminEscape($messageClass); ?> alert-dismissible fade show mb-4" role="alert"><?php echo adminEscape($message); ?><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
                         <?php if ($_SERVER['REQUEST_METHOD'] !== 'POST' && in_array($type, array('account_request', 'password_reset'), true) && $requestId !== '' && $token !== ''): ?>
                             <form method="POST" class="d-flex flex-wrap gap-3">
                                 <input type="hidden" name="type" value="<?php echo adminEscape($type); ?>">
@@ -89,5 +89,6 @@ if ($type !== '' && $requestId !== '' && $token !== '') {
             </div>
         </div>
     </section>
+    <script src="js/admin-alerts.js"></script>
 </body>
 </html>

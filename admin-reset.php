@@ -42,7 +42,7 @@ if ($token === '' || $resetToken === null) {
                     <div class="project-detail-panel admin-panel-card">
                         <span class="section-subtitle">Approved Reset</span>
                         <h1 class="section-title mb-3">Set a new admin password</h1>
-                        <?php if ($errorMessage !== ''): ?><div class="alert alert-danger mb-4"><?php echo adminEscape($errorMessage); ?></div><?php endif; ?>
+                        <?php if ($errorMessage !== ''): ?><div class="alert alert-danger alert-dismissible fade show mb-4" role="alert"><?php echo adminEscape($errorMessage); ?><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div><?php endif; ?>
                         <?php if ($errorMessage === '' && $resetToken !== null): ?>
                             <p class="section-description mb-4">Enter a new password for the admin account. This secure reset link expires automatically.</p>
                             <form method="POST" class="admin-form">
@@ -59,5 +59,6 @@ if ($token === '' || $resetToken === null) {
             </div>
         </div>
     </section>
+    <script src="js/admin-alerts.js"></script>
 </body>
 </html>

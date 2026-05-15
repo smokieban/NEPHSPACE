@@ -201,8 +201,13 @@
     }
 
     function showMessage(element, message, type) {
-        element.className = `mt-3 ${type}`;
-        element.textContent = message;
+        const alertClass = type === 'error' ? 'alert-danger' : 'alert-success';
+        element.className = 'mt-3';
+        element.innerHTML = `
+            <div class="alert ${alertClass} alert-dismissible fade show mb-0" role="alert">
+                ${escapeHtml(message)}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
     }
 
     function loadingMarkup(message) {
