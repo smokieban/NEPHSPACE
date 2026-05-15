@@ -6,6 +6,10 @@ error_reporting(E_ALL);
 ob_start();
 
 require_once __DIR__ . '/articles.lib.php';
+require_once __DIR__ . '/admin.lib.php';
+
+$adminConfig = loadAdminConfig();
+startAdminSession($adminConfig['session_name']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     sendArticlesJsonResponse(array(
@@ -20,6 +24,21 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 try {
     $action = isset($_POST['action']) ? trim((string) $_POST['action']) : 'save';
+
+    if (!isAdminConfigured($adminConfig)) {
+        recordAdminSecurityEvent('article_write_attempt_without_admin_configuration', array('action' => $action), $adminConfig);
+        sendArticlesJsonResponse(array('success' => false, 'message' => 'Admin access is not configured yet.'), 503);
+    }
+
+    if (!isAdminAuthenticated()) {
+        recordAdminSecurityEvent('unauthenticated_article_write_attempt', array('action' => $action), $adminConfig);
+        sendArticlesJsonResponse(array('success' => false, 'message' => 'Authentication required.'), 401);
+    }
+
+    if (!validateAdminCsrfToken($_POST['csrf_token'] ?? '')) {
+        recordAdminSecurityEvent('invalid_article_write_csrf_token', array('action' => $action), $adminConfig);
+        sendArticlesJsonResponse(array('success' => false, 'message' => 'Your session has expired. Please sign in again.'), 403);
+    }
 
     if ($action === 'delete') {
         $slug = isset($_POST['slug']) ? trim((string) $_POST['slug']) : '';

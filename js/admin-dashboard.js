@@ -11,6 +11,7 @@
 
     const fields = {
         originalSlug: document.getElementById('articleOriginalSlug'),
+        csrf: document.getElementById('adminCsrfToken'),
         title: document.getElementById('articleTitleInput'),
         category: document.getElementById('articleCategoryInput'),
         topic: document.getElementById('articleTopicInput'),
@@ -61,6 +62,7 @@
         const formData = new FormData(articleForm);
         formData.set('action', 'save');
         formData.set('rawBody', fields.body.value || '');
+        if (fields.csrf && fields.csrf.value) formData.set('csrf_token', fields.csrf.value);
 
         const submitButton = articleForm.querySelector('button[type="submit"]');
         const originalHtml = submitButton.innerHTML;
@@ -157,6 +159,7 @@
         const formData = new FormData();
         formData.set('action', 'delete');
         formData.set('slug', slug);
+        if (fields.csrf && fields.csrf.value) formData.set('csrf_token', fields.csrf.value);
 
         try {
             const response = await fetch('articles.php', { method: 'POST', body: formData });
@@ -176,6 +179,7 @@
         const formData = new FormData();
         formData.set('action', 'delete');
         formData.set('id', id);
+        if (fields.csrf && fields.csrf.value) formData.set('csrf_token', fields.csrf.value);
 
         try {
             const response = await fetch('testimonials.php', { method: 'POST', body: formData });

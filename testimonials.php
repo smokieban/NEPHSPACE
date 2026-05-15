@@ -6,6 +6,10 @@ error_reporting(E_ALL);
 ob_start();
 
 require_once __DIR__ . '/testimonials.lib.php';
+require_once __DIR__ . '/admin.lib.php';
+
+$adminConfig = loadAdminConfig();
+startAdminSession($adminConfig['session_name']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     sendTestimonialsJsonResponse(array(
@@ -25,6 +29,21 @@ try {
     $action = isset($_POST['action']) ? trim((string) $_POST['action']) : 'submit';
 
     if ($action === 'delete') {
+        if (!isAdminConfigured($adminConfig)) {
+            recordAdminSecurityEvent('testimonial_delete_attempt_without_admin_configuration', array('action' => $action), $adminConfig);
+            sendTestimonialsJsonResponse(array('success' => false, 'message' => 'Admin access is not configured yet.'), 503);
+        }
+
+        if (!isAdminAuthenticated()) {
+            recordAdminSecurityEvent('unauthenticated_testimonial_delete_attempt', array('action' => $action), $adminConfig);
+            sendTestimonialsJsonResponse(array('success' => false, 'message' => 'Authentication required.'), 401);
+        }
+
+        if (!validateAdminCsrfToken($_POST['csrf_token'] ?? '')) {
+            recordAdminSecurityEvent('invalid_testimonial_delete_csrf_token', array('action' => $action), $adminConfig);
+            sendTestimonialsJsonResponse(array('success' => false, 'message' => 'Your session has expired. Please sign in again.'), 403);
+        }
+
         $id = isset($_POST['id']) ? trim((string) $_POST['id']) : '';
         if ($id === '') {
             throw new RuntimeException('Testimonial id is required.');
