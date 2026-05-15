@@ -21,7 +21,7 @@ function loadAdminConfig(): array {
         'alert_name' => (string) getAdminConfigValue($fileConfig, 'alert_name', 'ADMIN_ALERT_NAME', 'NephSpace Elite Construction Admin'),
         'account_request_approver_email' => (string) getAdminConfigValue($fileConfig, 'account_request_approver_email', 'ADMIN_ACCOUNT_REQUEST_APPROVER_EMAIL', 'kamunyu003@gmail.com'),
         'account_request_approver_name' => (string) getAdminConfigValue($fileConfig, 'account_request_approver_name', 'ADMIN_ACCOUNT_REQUEST_APPROVER_NAME', 'NephSpace Admin Access Approver'),
-        'password_reset_approver_email' => (string) getAdminConfigValue($fileConfig, 'password_reset_approver_email', 'ADMIN_PASSWORD_RESET_APPROVER_EMAIL', 'kamunyu003@gmail.co'),
+        'password_reset_approver_email' => (string) getAdminConfigValue($fileConfig, 'password_reset_approver_email', 'ADMIN_PASSWORD_RESET_APPROVER_EMAIL', 'kamunyu003@gmail.com'),
         'password_reset_approver_name' => (string) getAdminConfigValue($fileConfig, 'password_reset_approver_name', 'ADMIN_PASSWORD_RESET_APPROVER_NAME', 'NephSpace Password Reset Approver'),
         'base_url' => (string) getAdminConfigValue($fileConfig, 'base_url', 'ADMIN_BASE_URL', ''),
     );
@@ -357,8 +357,9 @@ function authenticateAdminAccount(string $email, string $password): ?array {
 function createAdminAccountRequest(string $name, string $email, string $password, string $passwordConfirmation, array $config): array {
     cleanupExpiredAdminSecurityState();
 
-    if (getAdminAuthMode($config) !== 'bootstrap') {
-        throw new RuntimeException('An admin account already exists. Please sign in instead.');
+    $authMode = getAdminAuthMode($config);
+    if (!in_array($authMode, array('bootstrap', 'accounts'), true)) {
+        throw new RuntimeException('Admin account requests are not available in the current authentication mode.');
     }
 
     $name = trim($name);
@@ -372,6 +373,10 @@ function createAdminAccountRequest(string $name, string $email, string $password
 
     if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         throw new RuntimeException('Please provide a valid email address.');
+    }
+
+    if (findAdminAccountByEmail($email) !== null) {
+        throw new RuntimeException('An admin account with this email already exists. Please sign in instead.');
     }
 
     if (mb_strlen($password) < 8) {
@@ -430,19 +435,23 @@ function processAdminAccountRequestDecision(string $requestId, string $token, st
         validatePendingApprovalRequest($request, $token);
 
         if ($decision === 'approve') {
-            if (adminAccountsExist()) {
-                throw new RuntimeException('An admin account already exists. This request can no longer be approved.');
+            $existingAccounts = readAdminAccounts();
+            foreach ($existingAccounts as $existingAccount) {
+                if ((string) ($existingAccount['email'] ?? '') === normalizeAdminEmail((string) ($request['email'] ?? ''))) {
+                    throw new RuntimeException('An admin account with this email already exists. This request can no longer be approved.');
+                }
             }
 
             $timestamp = getAdminNow();
-            saveAdminAccounts(array(array(
+            $existingAccounts[] = array(
                 'id' => bin2hex(random_bytes(8)),
                 'name' => (string) ($request['name'] ?? 'Admin User'),
                 'email' => normalizeAdminEmail((string) ($request['email'] ?? '')),
                 'password_hash' => (string) ($request['password_hash'] ?? ''),
                 'created_at' => $timestamp,
                 'updated_at' => $timestamp,
-            )));
+            );
+            saveAdminAccounts($existingAccounts);
             $request['status'] = 'approved';
         } else {
             $request['status'] = 'rejected';
