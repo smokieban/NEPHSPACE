@@ -22,7 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: ' . (!empty($request['status_url']) ? (string) $request['status_url'] : 'admin.php?request_sent=1')); exit;
         } catch (RuntimeException $exception) { $errorMessage = $exception->getMessage(); }
     } elseif ($action === 'request_password_reset') {
-        createAdminPasswordResetRequest((string) ($_POST['email'] ?? ''), $config); header('Location: admin.php?reset_requested=1'); exit;
+        try {
+            createAdminPasswordResetRequest((string) ($_POST['email'] ?? ''), $config); header('Location: admin.php?reset_requested=1'); exit;
+        } catch (RuntimeException $exception) { $errorMessage = $exception->getMessage(); }
     } elseif ($action === 'login') {
         $authMode = getAdminAuthMode($config);
         if ($authMode === 'bootstrap') $errorMessage = 'Request the first admin account before signing in.';

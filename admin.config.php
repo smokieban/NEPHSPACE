@@ -1,7 +1,8 @@
 <?php
 
 return array(
-    'admin_password' => 'change-this-password',
+    'enable_legacy_password_login' => false,
+    'admin_password' => '',
     'admin_password_hash' => '',
     'session_name' => 'nephspace_admin',
     'alert_email' => 'nephspaceconstruction1@gmail.com',

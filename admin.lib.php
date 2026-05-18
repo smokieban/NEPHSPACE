@@ -14,6 +14,7 @@ function loadAdminConfig(): array {
     }
 
     return array(
+        'enable_legacy_password_login' => getAdminBooleanConfigValue($fileConfig, 'enable_legacy_password_login', 'ADMIN_ENABLE_LEGACY_PASSWORD_LOGIN', false),
         'admin_password' => (string) getAdminConfigValue($fileConfig, 'admin_password', 'ADMIN_PASSWORD', ''),
         'admin_password_hash' => (string) getAdminConfigValue($fileConfig, 'admin_password_hash', 'ADMIN_PASSWORD_HASH', ''),
         'session_name' => (string) getAdminConfigValue($fileConfig, 'session_name', 'ADMIN_SESSION_NAME', 'nephspace_admin'),
@@ -35,6 +36,25 @@ function getAdminConfigValue(array $fileConfig, string $key, string $envKey, mix
     $envValue = getenv($envKey);
     if ($envValue !== false && $envValue !== '') {
         return $envValue;
+    }
+
+    return $default;
+}
+
+function getAdminBooleanConfigValue(array $fileConfig, string $key, string $envKey, bool $default): bool {
+    if (array_key_exists($key, $fileConfig)) {
+        $normalizedValue = filter_var($fileConfig[$key], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        if ($normalizedValue !== null) {
+            return $normalizedValue;
+        }
+    }
+
+    $envValue = getenv($envKey);
+    if ($envValue !== false && $envValue !== '') {
+        $normalizedValue = filter_var($envValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        if ($normalizedValue !== null) {
+            return $normalizedValue;
+        }
     }
 
     return $default;
@@ -220,7 +240,7 @@ function getAdminAuthMode(array $config): string {
         return 'accounts';
     }
 
-    if (isAdminLegacyConfigured($config)) {
+    if (!empty($config['enable_legacy_password_login']) && isAdminLegacyConfigured($config)) {
         return 'legacy';
     }
 
@@ -261,12 +281,7 @@ function isAdminIsoTimeExpired(string $isoTime): bool {
     return $timestamp < time();
 }
 
-function getAdminBaseUrl(array $config): string {
-    $configured = trim((string) ($config['base_url'] ?? ''));
-    if ($configured !== '') {
-        return rtrim($configured, '/');
-    }
-
+function getAdminRequestBaseUrl(): string {
     $host = trim((string) ($_SERVER['HTTP_HOST'] ?? ''));
     if ($host === '') {
         return '';
@@ -277,6 +292,28 @@ function getAdminBaseUrl(array $config): string {
     $directory = $directory === '/' || $directory === '.' ? '' : '/' . trim($directory, '/');
 
     return $scheme . '://' . $host . $directory;
+}
+
+function getAdminBaseUrl(array $config): string {
+    $configured = rtrim(trim((string) ($config['base_url'] ?? '')), '/');
+    $requestBase = getAdminRequestBaseUrl();
+
+    if ($requestBase === '') {
+        return $configured;
+    }
+
+    if ($configured === '') {
+        return $requestBase;
+    }
+
+    $configuredHost = strtolower((string) (parse_url($configured, PHP_URL_HOST) ?? ''));
+    $requestHost = strtolower((string) (parse_url($requestBase, PHP_URL_HOST) ?? ''));
+
+    if ($configuredHost !== '' && $requestHost !== '' && $configuredHost !== $requestHost) {
+        return $requestBase;
+    }
+
+    return $configured;
 }
 
 function buildAdminUrl(array $config, string $path, array $query = array()): string {
@@ -416,7 +453,18 @@ function createAdminAccountRequest(string $name, string $email, string $password
     $requests[] = $request;
     saveAdminAccountRequests($requests);
     recordAdminSecurityEvent('admin_account_request_submitted', array('email' => $email, 'name' => $name), $config, false);
-    sendAdminAccountRequestApprovalEmail($request, $approvalToken, $config);
+
+    try {
+        sendAdminAccountRequestApprovalEmail($request, $approvalToken, $config);
+    } catch (RuntimeException $exception) {
+        $requests = array_values(array_filter($requests, function ($storedRequest) use ($request) {
+            return (string) ($storedRequest['id'] ?? '') !== (string) ($request['id'] ?? '');
+        }));
+        saveAdminAccountRequests($requests);
+        recordAdminSecurityEvent('admin_account_request_notification_failed', array('email' => $email, 'request_id' => (string) ($request['id'] ?? '')), $config, false);
+        throw $exception;
+    }
+
     $request['status_url'] = buildAdminAccountRequestStatusUrl($request, $statusToken, $config);
     return $request;
 }
@@ -508,7 +556,18 @@ function createAdminPasswordResetRequest(string $email, array $config): bool {
     $requests[] = $request;
     saveAdminPasswordResetRequests($requests);
     recordAdminSecurityEvent('admin_password_reset_requested', array('email' => (string) $account['email']), $config, false);
-    sendAdminPasswordResetApprovalEmail($request, $approvalToken, $config);
+
+    try {
+        sendAdminPasswordResetApprovalEmail($request, $approvalToken, $config);
+    } catch (RuntimeException $exception) {
+        $requests = array_values(array_filter($requests, function ($storedRequest) use ($request) {
+            return (string) ($storedRequest['id'] ?? '') !== (string) ($request['id'] ?? '');
+        }));
+        saveAdminPasswordResetRequests($requests);
+        recordAdminSecurityEvent('admin_password_reset_notification_failed', array('email' => (string) $account['email'], 'request_id' => (string) ($request['id'] ?? '')), $config, false);
+        throw $exception;
+    }
+
     return true;
 }
 
@@ -751,7 +810,7 @@ function sendAdminSecurityAlert(array $entry, array $config): void {
 
 function sendAdminAccountRequestApprovalEmail(array $request, string $rawToken, array $config): void {
     $reviewUrl = buildAdminUrl($config, 'admin-approval.php', array('type' => 'account_request', 'request' => (string) ($request['id'] ?? ''), 'token' => $rawToken));
-    deliverAdminAlertEmail($config, 'Admin access request requires approval', buildAdminAccountRequestApprovalBody($request, $reviewUrl), (string) $config['account_request_approver_email'], (string) $config['account_request_approver_name']);
+    deliverAdminAlertEmail($config, 'Admin access request requires approval', buildAdminAccountRequestApprovalBody($request, $reviewUrl), (string) $config['account_request_approver_email'], (string) $config['account_request_approver_name'], true, 'We could not send your approval email request. Please verify the SMTP settings and try again.');
 }
 
 function sendAdminAccountRequestDecisionEmail(array $request, string $decision, array $config): void {
@@ -766,7 +825,7 @@ function sendAdminAccountRequestDecisionEmail(array $request, string $decision, 
 
 function sendAdminPasswordResetApprovalEmail(array $request, string $rawToken, array $config): void {
     $reviewUrl = buildAdminUrl($config, 'admin-approval.php', array('type' => 'password_reset', 'request' => (string) ($request['id'] ?? ''), 'token' => $rawToken));
-    deliverAdminAlertEmail($config, 'Admin password reset request requires approval', buildAdminPasswordResetApprovalBody($request, $reviewUrl), (string) $config['password_reset_approver_email'], (string) $config['password_reset_approver_name']);
+    deliverAdminAlertEmail($config, 'Admin password reset request requires approval', buildAdminPasswordResetApprovalBody($request, $reviewUrl), (string) $config['password_reset_approver_email'], (string) $config['password_reset_approver_name'], true, 'We could not send the password reset approval email. Please verify the SMTP settings and try again.');
 }
 
 function sendApprovedAdminPasswordResetEmail(array $account, string $resetLink, array $config): void {
@@ -783,21 +842,30 @@ function sendRejectedAdminPasswordResetEmail(array $request, array $config): voi
     );
 }
 
-function deliverAdminAlertEmail(array $config, string $subject, string $body, string $recipientEmail, string $recipientName): void {
+function deliverAdminAlertEmail(array $config, string $subject, string $body, string $recipientEmail, string $recipientName, bool $throwOnFailure = false, string $publicFailureMessage = 'We could not send this email right now.'): void {
     $recipientEmail = trim($recipientEmail);
     if ($recipientEmail === '') {
+        if ($throwOnFailure) {
+            throw new RuntimeException($publicFailureMessage);
+        }
         return;
     }
 
     $autoloadPath = __DIR__ . '/vendor/autoload.php';
     if (!file_exists($autoloadPath)) {
         error_log('Admin alert email skipped: Composer autoload missing.');
+        if ($throwOnFailure) {
+            throw new RuntimeException($publicFailureMessage);
+        }
         return;
     }
 
     $transportConfig = loadAdminMailTransportConfig();
     if (!isAdminMailTransportConfigured($transportConfig)) {
         error_log('Admin alert email skipped: SMTP configuration incomplete.');
+        if ($throwOnFailure) {
+            throw new RuntimeException($publicFailureMessage);
+        }
         return;
     }
 
@@ -826,6 +894,9 @@ function deliverAdminAlertEmail(array $config, string $subject, string $body, st
         $mailer->send();
     } catch (Throwable $exception) {
         error_log('Admin alert email failed: ' . $exception->getMessage());
+        if ($throwOnFailure) {
+            throw new RuntimeException($publicFailureMessage, 0, $exception);
+        }
     }
 }
 
