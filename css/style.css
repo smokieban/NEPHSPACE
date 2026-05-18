@@ -2154,6 +2154,22 @@ section {
     line-height: 1.9;
 }
 
+.article-rich-body ul,
+.article-rich-body ol {
+    margin: 0;
+    padding-left: 1.3rem;
+    color: var(--text-light);
+    line-height: 1.9;
+}
+
+.article-rich-body li + li {
+    margin-top: 6px;
+}
+
+.article-rich-body a {
+    word-break: break-word;
+}
+
 .article-detail-accordion {
     display: grid;
     gap: 16px;
