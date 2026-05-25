@@ -41,6 +41,8 @@ body {
 p,
 li {
     word-spacing: normal;
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -94,6 +96,8 @@ section {
     color: var(--text-light);
     max-width: 700px;
     margin: 0 auto;
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 /* ===== Buttons ===== */

@@ -27,6 +27,7 @@
 
     articleForm.addEventListener('submit', saveArticle);
     articleResetButton.addEventListener('click', resetArticleForm);
+    fields.body.addEventListener('paste', handleRichArticlePaste);
 
     loadArticles();
     loadTestimonials();
@@ -237,30 +238,129 @@
         wrapper.innerHTML = html || '';
         const blocks = [];
 
-        Array.from(wrapper.children).forEach(element => {
-            const tag = element.tagName.toUpperCase();
-            if (tag === 'H3') {
-                blocks.push(element.textContent.trim());
-                return;
-            }
-
-            if (tag === 'P') {
-                blocks.push(element.textContent.trim());
-                return;
-            }
-
-            if (tag === 'UL' || tag === 'OL') {
-                const items = Array.from(element.querySelectorAll('li'))
-                    .map(item => `• ${item.textContent.trim()}`)
-                    .filter(Boolean)
-                    .join('\n');
-                if (items) {
-                    blocks.push(items);
-                }
-            }
-        });
+        Array.from(wrapper.childNodes).forEach(node => appendEditorBlocks(node, blocks));
 
         return normalizeEditorText(blocks.join('\n\n'));
+    }
+
+    function handleRichArticlePaste(event) {
+        const html = event.clipboardData?.getData('text/html') || '';
+        if (!html || !/<\/?[a-z][\s\S]*>/i.test(html)) {
+            return;
+        }
+
+        const converted = htmlToEditorBody(html);
+        if (!converted) {
+            return;
+        }
+
+        event.preventDefault();
+        insertTextAtCursor(fields.body, converted);
+    }
+
+    function appendEditorBlocks(node, blocks) {
+        if (!node) {
+            return;
+        }
+
+        if (node.nodeType === Node.TEXT_NODE) {
+            const text = normalizeInlineEditorText(node.textContent || '');
+            if (text) {
+                blocks.push(text);
+            }
+            return;
+        }
+
+        if (node.nodeType !== Node.ELEMENT_NODE) {
+            return;
+        }
+
+        const tag = node.tagName.toUpperCase();
+        if (tag === 'H3' || tag === 'P') {
+            const text = elementToEditorText(node);
+            if (text) {
+                blocks.push(text);
+            }
+            return;
+        }
+
+        if (tag === 'UL' || tag === 'OL') {
+            const items = Array.from(node.children)
+                .filter(child => child.tagName && child.tagName.toUpperCase() === 'LI')
+                .map((item, index) => `${tag === 'OL' ? `${index + 1}.` : '•'} ${elementToEditorText(item)}`.trim())
+                .filter(Boolean)
+                .join('\n');
+            if (items) {
+                blocks.push(items);
+            }
+            return;
+        }
+
+        Array.from(node.childNodes).forEach(child => appendEditorBlocks(child, blocks));
+    }
+
+    function elementToEditorText(element) {
+        return normalizeInlineEditorText(Array.from(element.childNodes).map(nodeToEditorText).join(''));
+    }
+
+    function nodeToEditorText(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            return node.textContent || '';
+        }
+
+        if (node.nodeType !== Node.ELEMENT_NODE) {
+            return '';
+        }
+
+        const tag = node.tagName.toUpperCase();
+        const content = Array.from(node.childNodes).map(nodeToEditorText).join('');
+        const style = String(node.getAttribute('style') || '').toLowerCase();
+
+        if (tag === 'BR') {
+            return '\n';
+        }
+
+        if (tag === 'STRONG' || tag === 'B') {
+            return `**${normalizeInlineEditorText(content)}**`;
+        }
+
+        if (tag === 'EM' || tag === 'I') {
+            return `*${normalizeInlineEditorText(content)}*`;
+        }
+
+        if (/font-weight\s*:\s*(bold|[5-9]00)/.test(style)) {
+            return `**${normalizeInlineEditorText(content)}**`;
+        }
+
+        if (/font-style\s*:\s*italic/.test(style)) {
+            return `*${normalizeInlineEditorText(content)}*`;
+        }
+
+        if (tag === 'A') {
+            const linkText = normalizeInlineEditorText(content);
+            return linkText || normalizeInlineEditorText(node.getAttribute('href') || '');
+        }
+
+        return content;
+    }
+
+    function normalizeInlineEditorText(value) {
+        return String(value || '')
+            .replace(/\u00a0/g, ' ')
+            .replace(/[\t\f\v\r ]+/g, ' ')
+            .replace(/ *\n */g, '\n')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
+    }
+
+    function insertTextAtCursor(textarea, text) {
+        const start = typeof textarea.selectionStart === 'number' ? textarea.selectionStart : textarea.value.length;
+        const end = typeof textarea.selectionEnd === 'number' ? textarea.selectionEnd : textarea.value.length;
+        const prefix = start > 0 && !/\n\s*$/.test(textarea.value.slice(0, start)) ? '\n\n' : '';
+        const suffix = end < textarea.value.length && !/^\s*\n/.test(textarea.value.slice(end)) ? '\n\n' : '';
+        const insertion = `${prefix}${normalizeEditorText(text)}${suffix}`;
+        textarea.setRangeText(insertion, start, end, 'end');
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
     }
 
     function normalizeEditorText(value) {

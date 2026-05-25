@@ -379,6 +379,8 @@ function normalizeArticleBody(string $body, string $articleTitle = ''): string {
     }
 
     if (preg_match('/<\/?[a-z][\s\S]*>/i', $body)) {
+        $body = preg_replace('/<(\/?)(?:b)(?=[\s>])/i', '<$1strong', $body);
+        $body = preg_replace('/<(\/?)(?:i)(?=[\s>])/i', '<$1em', $body);
         return trim(strip_tags($body, '<p><br><h3><ul><ol><li><strong><em><a>'));
     }
 
@@ -435,14 +437,14 @@ function normalizeArticleBody(string $body, string $articleTitle = ''): string {
         if (preg_match('/^(?:##\s+)(.+)$/', $line, $matches)) {
             $flushParagraph();
             $flushList();
-            $html[] = '<h3>' . escapeArticleHeading(trim($matches[1])) . '</h3>';
+            $html[] = '<h3>' . renderArticleInlineText(trim($matches[1])) . '</h3>';
             continue;
         }
 
         if (isLikelyArticleHeading($line)) {
             $flushParagraph();
             $flushList();
-            $html[] = '<h3>' . escapeArticleHeading($line) . '</h3>';
+            $html[] = '<h3>' . renderArticleInlineText($line) . '</h3>';
             continue;
         }
 
@@ -539,10 +541,6 @@ function renderArticleInlineText(string $text): string {
         $text
     );
     return $text;
-}
-
-function escapeArticleHeading(string $text): string {
-    return htmlspecialchars(trim($text), ENT_QUOTES, 'UTF-8');
 }
 
 function generateArticleExcerpt(string $bodyHtml): string {
