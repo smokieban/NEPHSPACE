@@ -1,14 +1,14 @@
 <?php
 
 return array(
-    'host' => 'smtp.gmail.com',
+    'host' => 'smtp.eu.appsuite.cloud',
     'port' => 587,
     'encryption' => 'tls',
-    'username' => 'nephspaceconstruction1@gmail.com',
-    'password' => 'your-google-app-password',
-    'from_email' => 'nephspaceconstruction1@gmail.com',
+    'username' => 'info@nephspaceelite.com',
+    'password' => 'your-email-password',
+    'from_email' => 'info@nephspaceelite.com',
     'from_name' => 'NephSpace Elite Construction',
-    'recipient_email' => 'nephspaceconstruction1@gmail.com',
+    'recipient_email' => 'info@nephspaceelite.com',
     'recipient_name' => 'NephSpace Elite Construction',
     'auto_reply_enabled' => true,
 );

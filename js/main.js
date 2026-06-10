@@ -279,7 +279,7 @@
 
     const navbarContactDetails = [
         { label: 'Call us', iconClass: 'fas fa-phone-alt', href: 'tel:+254700903141', value: '+254700903141' },
-        { label: 'Email us', iconClass: 'fas fa-envelope', href: 'mailto:nephspaceconstruction1@gmail.com', value: 'nephspaceconstruction1@gmail.com' }
+        { label: 'Email us', iconClass: 'fas fa-envelope', href: 'mailto:info@nephspaceelite.com', value: 'info@nephspaceelite.com' }
     ];
 
     const serviceDropdownLinks = [
@@ -831,7 +831,7 @@
                             <ul class="footer-links">
                                 <li><a href="https://www.google.com/maps?q=PRM6%2B22W%2C%20Mogotio%20Rd%2C%20Nairobi" class="footer-location-link" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i>Royal Offices Mogotio Road</a></li>
                                 <li><a href="tel:+254700903141"><i class="fas fa-phone"></i>+254700903141</a></li>
-                                <li><a href="mailto:nephspaceconstruction1@gmail.com"><i class="fas fa-envelope"></i>nephspaceconstruction1@gmail.com</a></li>
+                                <li><a href="mailto:info@nephspaceelite.com"><i class="fas fa-envelope"></i>info@nephspaceelite.com</a></li>
                                 <li><span><i class="fas fa-clock"></i>Mon-Fri 8am-5pm, Sat 8am-12pm</span></li>
                             </ul>
                         </div>

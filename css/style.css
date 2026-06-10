@@ -39,10 +39,24 @@ body {
 }
 
 p,
-li {
+li,
+blockquote {
     word-spacing: normal;
     text-align: justify;
     text-justify: inter-word;
+    hyphens: auto;
+    overflow-wrap: break-word;
+}
+
+.text-center p,
+.text-center li,
+.text-center blockquote,
+p.text-center,
+li.text-center,
+blockquote.text-center {
+    text-align: center;
+    text-justify: auto;
+    hyphens: manual;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -98,6 +112,8 @@ section {
     margin: 0 auto;
     text-align: justify;
     text-justify: inter-word;
+    hyphens: auto;
+    overflow-wrap: break-word;
 }
 
 /* ===== Buttons ===== */

@@ -93,9 +93,9 @@ try {
 } catch (Throwable $exception) {
     error_log('Contact form handler exception: ' . $exception->getMessage());
 
-        $message = 'Sorry, there was an error sending your message. Please try again later or contact us directly at nephspaceconstruction1@gmail.com.';
+        $message = 'Sorry, there was an error sending your message. Please try again later or contact us directly at info@nephspaceelite.com.';
     if (strpos($exception->getMessage(), 'SMTP configuration') !== false) {
-        $message = 'Email service is not configured yet. Please contact us directly at nephspaceconstruction1@gmail.com.';
+        $message = 'Email service is not configured yet. Please contact us directly at info@nephspaceelite.com.';
     }
 
     sendJsonResponse(array(
@@ -188,9 +188,9 @@ function loadMailConfig() {
         'encryption' => getConfigValue($fileConfig, 'encryption', 'SMTP_ENCRYPTION', 'tls'),
         'username' => getConfigValue($fileConfig, 'username', 'SMTP_USERNAME', ''),
         'password' => getConfigValue($fileConfig, 'password', 'SMTP_PASSWORD', ''),
-        'from_email' => getConfigValue($fileConfig, 'from_email', 'SMTP_FROM_EMAIL', 'nephspaceconstruction1@gmail.com'),
+        'from_email' => getConfigValue($fileConfig, 'from_email', 'SMTP_FROM_EMAIL', 'info@nephspaceelite.com'),
         'from_name' => getConfigValue($fileConfig, 'from_name', 'SMTP_FROM_NAME', 'NephSpace Elite Construction'),
-        'recipient_email' => getConfigValue($fileConfig, 'recipient_email', 'SMTP_RECIPIENT_EMAIL', 'nephspaceconstruction1@gmail.com'),
+        'recipient_email' => getConfigValue($fileConfig, 'recipient_email', 'SMTP_RECIPIENT_EMAIL', 'info@nephspaceelite.com'),
         'recipient_name' => getConfigValue($fileConfig, 'recipient_name', 'SMTP_RECIPIENT_NAME', 'NephSpace Elite Construction'),
         'auto_reply_enabled' => filter_var(getConfigValue($fileConfig, 'auto_reply_enabled', 'SMTP_AUTO_REPLY_ENABLED', true), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
     );

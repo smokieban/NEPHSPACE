@@ -18,7 +18,7 @@ function loadAdminConfig(): array {
         'admin_password' => (string) getAdminConfigValue($fileConfig, 'admin_password', 'ADMIN_PASSWORD', ''),
         'admin_password_hash' => (string) getAdminConfigValue($fileConfig, 'admin_password_hash', 'ADMIN_PASSWORD_HASH', ''),
         'session_name' => (string) getAdminConfigValue($fileConfig, 'session_name', 'ADMIN_SESSION_NAME', 'nephspace_admin'),
-        'alert_email' => (string) getAdminConfigValue($fileConfig, 'alert_email', 'ADMIN_ALERT_EMAIL', 'nephspaceconstruction1@gmail.com'),
+        'alert_email' => (string) getAdminConfigValue($fileConfig, 'alert_email', 'ADMIN_ALERT_EMAIL', 'info@nephspaceelite.com'),
         'alert_name' => (string) getAdminConfigValue($fileConfig, 'alert_name', 'ADMIN_ALERT_NAME', 'NephSpace Elite Construction Admin'),
         'account_request_approver_email' => (string) getAdminConfigValue($fileConfig, 'account_request_approver_email', 'ADMIN_ACCOUNT_REQUEST_APPROVER_EMAIL', 'kamunyu003@gmail.com'),
         'account_request_approver_name' => (string) getAdminConfigValue($fileConfig, 'account_request_approver_name', 'ADMIN_ACCOUNT_REQUEST_APPROVER_NAME', 'NephSpace Admin Access Approver'),
@@ -910,7 +910,7 @@ function loadAdminMailTransportConfig(): array {
         }
     }
 
-    return array('host' => (string) getAdminConfigValue($fileConfig, 'host', 'SMTP_HOST', ''), 'port' => (int) getAdminConfigValue($fileConfig, 'port', 'SMTP_PORT', 587), 'encryption' => (string) getAdminConfigValue($fileConfig, 'encryption', 'SMTP_ENCRYPTION', 'tls'), 'username' => (string) getAdminConfigValue($fileConfig, 'username', 'SMTP_USERNAME', ''), 'password' => (string) getAdminConfigValue($fileConfig, 'password', 'SMTP_PASSWORD', ''), 'from_email' => (string) getAdminConfigValue($fileConfig, 'from_email', 'SMTP_FROM_EMAIL', 'nephspaceconstruction1@gmail.com'), 'from_name' => (string) getAdminConfigValue($fileConfig, 'from_name', 'SMTP_FROM_NAME', 'NephSpace Elite Construction'));
+    return array('host' => (string) getAdminConfigValue($fileConfig, 'host', 'SMTP_HOST', ''), 'port' => (int) getAdminConfigValue($fileConfig, 'port', 'SMTP_PORT', 587), 'encryption' => (string) getAdminConfigValue($fileConfig, 'encryption', 'SMTP_ENCRYPTION', 'tls'), 'username' => (string) getAdminConfigValue($fileConfig, 'username', 'SMTP_USERNAME', ''), 'password' => (string) getAdminConfigValue($fileConfig, 'password', 'SMTP_PASSWORD', ''), 'from_email' => (string) getAdminConfigValue($fileConfig, 'from_email', 'SMTP_FROM_EMAIL', 'info@nephspaceelite.com'), 'from_name' => (string) getAdminConfigValue($fileConfig, 'from_name', 'SMTP_FROM_NAME', 'NephSpace Elite Construction'));
 }
 
 function isAdminMailTransportConfigured(array $config): bool {

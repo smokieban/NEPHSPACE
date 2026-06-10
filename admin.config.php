@@ -5,7 +5,7 @@ return array(
     'admin_password' => '',
     'admin_password_hash' => '',
     'session_name' => 'nephspace_admin',
-    'alert_email' => 'nephspaceconstruction1@gmail.com',
+    'alert_email' => 'info@nephspaceelite.com',
     'alert_name' => 'NephSpace Elite Construction Admin',
     'account_request_approver_email' => 'kamunyu003@gmail.com',
     'account_request_approver_name' => 'NephSpace Admin Access Approver',
