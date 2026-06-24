@@ -294,6 +294,36 @@ function getAdminRequestBaseUrl(): string {
     return $scheme . '://' . $host . $directory;
 }
 
+function normalizeAdminHostForComparison(string $host): string {
+    $host = strtolower(trim($host));
+    if ($host === '') {
+        return '';
+    }
+
+    if (preg_match('/^\[([^\]]+)\](?::[0-9]+)?$/', $host, $matches)) {
+        return strtolower(trim((string) ($matches[1] ?? '')));
+    }
+
+    return (string) preg_replace('/:[0-9]+$/', '', $host);
+}
+
+function isAdminLocalDevelopmentRequest(): bool {
+    $localHosts = array('localhost', '127.0.0.1', '::1');
+    $candidateHosts = array(
+        normalizeAdminHostForComparison((string) ($_SERVER['HTTP_HOST'] ?? '')),
+        normalizeAdminHostForComparison((string) ($_SERVER['SERVER_NAME'] ?? '')),
+    );
+
+    foreach ($candidateHosts as $host) {
+        if ($host !== '' && in_array($host, $localHosts, true)) {
+            return true;
+        }
+    }
+
+    $remoteAddr = trim((string) ($_SERVER['REMOTE_ADDR'] ?? ''));
+    return in_array($remoteAddr, array('127.0.0.1', '::1'), true);
+}
+
 function getAdminBaseUrl(array $config): string {
     $configured = rtrim(trim((string) ($config['base_url'] ?? '')), '/');
     $requestBase = getAdminRequestBaseUrl();
@@ -391,6 +421,31 @@ function authenticateAdminAccount(string $email, string $password): ?array {
         : null;
 }
 
+function createLocalBootstrapAdminAccount(string $name, string $email, string $password, array $config): array {
+    $timestamp = getAdminNow();
+    $accounts = readAdminAccounts();
+    $account = array(
+        'id' => bin2hex(random_bytes(8)),
+        'name' => $name,
+        'email' => $email,
+        'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+        'created_at' => $timestamp,
+        'updated_at' => $timestamp,
+    );
+
+    $accounts[] = $account;
+    saveAdminAccounts($accounts);
+    recordAdminSecurityEvent('initial_admin_account_created', array('email' => $email, 'name' => $name, 'mode' => 'localhost_bootstrap_bypass'), $config, false);
+
+    return array(
+        'id' => (string) $account['id'],
+        'name' => $name,
+        'email' => $email,
+        'status' => 'approved',
+        'status_url' => 'admin.php?account_created=1&view=signin',
+    );
+}
+
 function createAdminAccountRequest(string $name, string $email, string $password, string $passwordConfirmation, array $config): array {
     cleanupExpiredAdminSecurityState();
 
@@ -432,6 +487,10 @@ function createAdminAccountRequest(string $name, string $email, string $password
         ) {
             throw new RuntimeException('An account request for this email is already pending approval.');
         }
+    }
+
+    if ($authMode === 'bootstrap' && isAdminLocalDevelopmentRequest()) {
+        return createLocalBootstrapAdminAccount($name, $email, $password, $config);
     }
 
     $approvalToken = generateAdminToken();

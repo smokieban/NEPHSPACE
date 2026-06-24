@@ -3,10 +3,18 @@ require_once __DIR__ . '/admin.lib.php';
 $config = loadAdminConfig();
 startAdminSession($config['session_name']);
 cleanupExpiredAdminSecurityState();
+if (isAdminAuthenticated()) {
+    $authenticatedUser = getAuthenticatedAdminUser();
+    $authenticatedEmail = normalizeAdminEmail((string) ($authenticatedUser['email'] ?? ''));
+    if ($authenticatedEmail !== '' && findAdminAccountByEmail($authenticatedEmail) === null) {
+        setAdminAuthenticated(false);
+    }
+}
 header('X-Robots-Tag: noindex, nofollow', true);
 $successMessage = '';
 if (isset($_GET['logged_in'])) $successMessage = 'Signed in successfully.';
 elseif (isset($_GET['logged_out'])) $successMessage = 'You have been signed out.';
+elseif (isset($_GET['account_created'])) $successMessage = 'Your local admin account was created successfully. Please sign in.';
 elseif (isset($_GET['request_sent'])) $successMessage = 'Your admin access request has been sent for approval.';
 elseif (isset($_GET['reset_requested'])) $successMessage = 'If the admin account exists, a password reset approval request has been sent.';
 elseif (isset($_GET['password_reset_complete'])) $successMessage = 'Your password has been reset successfully. Please sign in.';
@@ -44,12 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $authMode = getAdminAuthMode($config); $csrfToken = ensureAdminCsrfToken(); $isAuthenticated = isAdminAuthenticated(); $authenticatedUser = getAuthenticatedAdminUser();
 $showSignIn = in_array($authMode, array('accounts', 'legacy'), true); $showPasswordReset = $authMode === 'accounts';
+$localBootstrapBypass = $authMode === 'bootstrap' && isAdminLocalDevelopmentRequest();
 $currentView = 'request';
 if (isset($_GET['view']) && $_GET['view'] === 'signin' && $showSignIn) $currentView = 'signin';
 if (isset($_GET['view']) && $_GET['view'] === 'reset' && $showPasswordReset) $currentView = 'reset';
 $currentView = $errorMessage !== '' && !$isAuthenticated ? (($showSignIn && (str_contains($errorMessage, 'Invalid') || str_contains($errorMessage, 'sign in'))) ? 'signin' : $currentView) : $currentView;
-$requestCardSubtitle = $authMode === 'bootstrap' ? 'Request First Admin Account' : 'Request New Admin Account';
-$requestCardDescription = $authMode === 'bootstrap' ? 'The first admin account will not be created immediately. Your request will be sent to ' . (string) $config['account_request_approver_email'] . ' for approve/reject review.' : 'Need access for another administrator? Submit the new account request here. It will still require approval from ' . (string) $config['account_request_approver_email'] . ' before the new admin can sign in.';
+$requestCardSubtitle = $localBootstrapBypass ? 'Create First Local Admin Account' : ($authMode === 'bootstrap' ? 'Request First Admin Account' : 'Request New Admin Account');
+$requestCardDescription = $localBootstrapBypass ? 'Because you are working on localhost, the first admin account can be created directly without sending an approval email. This bypass applies only on your local machine.' : ($authMode === 'bootstrap' ? 'The first admin account will not be created immediately. Your request will be sent to ' . (string) $config['account_request_approver_email'] . ' for approve/reject review.' : 'Need access for another administrator? Submit the new account request here. It will still require approval from ' . (string) $config['account_request_approver_email'] . ' before the new admin can sign in.');
 ?>
 <!DOCTYPE html>
 <html lang="en"><head>

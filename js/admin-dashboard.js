@@ -21,13 +21,31 @@
         excerpt: document.getElementById('articleExcerptInput'),
         body: document.getElementById('articleBodyInput')
     };
+    const articleSubmitButton = articleForm.querySelector('button[type="submit"]');
+    const articleActions = articleForm.querySelector('.admin-form-actions');
+    const articleModeNotice = document.createElement('div');
+    const saveAsNewButton = document.createElement('button');
 
     let articleCache = [];
     let testimonialCache = [];
 
+    articleModeNotice.id = 'adminArticleModeNotice';
+    articleModeNotice.className = 'alert alert-warning py-2 mb-3 d-none';
+    articleModeNotice.setAttribute('role', 'status');
+    articleMessage.parentNode.insertBefore(articleModeNotice, articleMessage);
+
+    saveAsNewButton.type = 'button';
+    saveAsNewButton.className = 'btn btn-outline-dark d-none';
+    saveAsNewButton.innerHTML = '<i class="fas fa-copy me-2"></i>Save as New Article';
+    saveAsNewButton.addEventListener('click', saveArticleAsNew);
+    articleActions.insertBefore(saveAsNewButton, articleResetButton);
+
     articleForm.addEventListener('submit', saveArticle);
     articleResetButton.addEventListener('click', resetArticleForm);
     fields.body.addEventListener('paste', handleRichArticlePaste);
+    fields.title.addEventListener('input', renderArticleFormMode);
+
+    renderArticleFormMode();
 
     loadArticles();
     loadTestimonials();
@@ -60,15 +78,29 @@
 
     async function saveArticle(event) {
         event.preventDefault();
+        return submitArticle({ asNew: false });
+    }
+
+    async function saveArticleAsNew() {
+        if (typeof articleForm.reportValidity === 'function' && !articleForm.reportValidity()) {
+            return;
+        }
+
+        return submitArticle({ asNew: true });
+    }
+
+    async function submitArticle(options) {
+        const asNew = Boolean(options && options.asNew);
+        const wasEditing = isEditingArticle();
         const formData = new FormData(articleForm);
+        if (asNew) {
+            formData.set('original_slug', '');
+        }
         formData.set('action', 'save');
         formData.set('rawBody', fields.body.value || '');
         if (fields.csrf && fields.csrf.value) formData.set('csrf_token', fields.csrf.value);
 
-        const submitButton = articleForm.querySelector('button[type="submit"]');
-        const originalHtml = submitButton.innerHTML;
-        submitButton.disabled = true;
-        submitButton.innerHTML = '<span class="btn-text">Saving...</span><span class="btn-icon"><i class="fas fa-spinner fa-spin"></i></span>';
+        setArticleButtonsBusy(true, asNew ? 'Saving as New...' : (wasEditing ? 'Updating...' : 'Saving...'));
 
         try {
             const response = await fetch('articles.php', { method: 'POST', body: formData });
@@ -77,12 +109,11 @@
             articleCache = Array.isArray(payload.articles) ? payload.articles : articleCache;
             renderArticles();
             resetArticleForm();
-            showMessage(articleMessage, payload.message || 'Article saved successfully.', 'success');
+            showMessage(articleMessage, getArticleSuccessMessage(asNew, wasEditing, payload.message), 'success');
         } catch (error) {
             showMessage(articleMessage, error.message || 'Unable to save the article.', 'error');
         } finally {
-            submitButton.disabled = false;
-            submitButton.innerHTML = originalHtml;
+            setArticleButtonsBusy(false);
         }
     }
 
@@ -151,7 +182,8 @@
         fields.image.value = article.image || '';
         fields.excerpt.value = article.excerpt || '';
         fields.body.value = getEditableArticleBody(article);
-        showMessage(articleMessage, `Editing “${article.title}”. Save to update it.`, 'success');
+        renderArticleFormMode();
+        showMessage(articleMessage, `Editing “${article.title}”. Use Update Article to change it or Save as New Article to publish a separate entry.`, 'success');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -199,6 +231,70 @@
         fields.readTime.value = '5 min read';
         articleMessage.className = 'mt-3';
         articleMessage.textContent = '';
+        renderArticleFormMode();
+    }
+
+    function isEditingArticle() {
+        return Boolean(fields.originalSlug && String(fields.originalSlug.value || '').trim() !== '');
+    }
+
+    function renderArticleFormMode() {
+        const editing = isEditingArticle();
+        const currentTitle = String(fields.title.value || '').trim() || 'Current article';
+
+        if (articleSubmitButton) {
+            articleSubmitButton.innerHTML = editing
+                ? '<span class="btn-text">Update Article</span><span class="btn-icon"><i class="fas fa-pen-to-square"></i></span>'
+                : '<span class="btn-text">Save Article</span><span class="btn-icon"><i class="fas fa-save"></i></span>';
+        }
+
+        if (articleResetButton) {
+            articleResetButton.textContent = editing ? 'Cancel Edit / New Article' : 'Clear Form';
+        }
+
+        if (saveAsNewButton) {
+            saveAsNewButton.classList.toggle('d-none', !editing);
+        }
+
+        if (!editing) {
+            articleModeNotice.classList.add('d-none');
+            articleModeNotice.innerHTML = '';
+            return;
+        }
+
+        articleModeNotice.classList.remove('d-none');
+        articleModeNotice.innerHTML = `<strong>Editing existing article:</strong> ${escapeHtml(currentTitle)}. Use <strong>Update Article</strong> to overwrite this article, or <strong>Save as New Article</strong> to create a separate article that will appear on the Articles page.`;
+    }
+
+    function setArticleButtonsBusy(isBusy, submitLabel) {
+        if (articleSubmitButton) {
+            articleSubmitButton.disabled = isBusy;
+            if (isBusy) {
+                articleSubmitButton.innerHTML = `<span class="btn-text">${escapeHtml(submitLabel || 'Saving...')}</span><span class="btn-icon"><i class="fas fa-spinner fa-spin"></i></span>`;
+            } else {
+                renderArticleFormMode();
+            }
+        }
+
+        if (saveAsNewButton) {
+            saveAsNewButton.disabled = isBusy;
+        }
+
+        if (articleResetButton) {
+            articleResetButton.disabled = isBusy;
+        }
+    }
+
+    function getArticleSuccessMessage(asNew, wasEditing, fallbackMessage) {
+        if (asNew) {
+            return 'Article saved as a new entry successfully. It should now appear separately on the Articles page.';
+        }
+
+        if (wasEditing) {
+            return 'Article updated successfully.';
+        }
+
+        return fallbackMessage || 'Article saved successfully.';
     }
 
     function showMessage(element, message, type) {
